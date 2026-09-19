@@ -1,5 +1,5 @@
 import { Wllama } from './vendor/wllama.js';
-import { hfSource, remoteSource, localSource, acquireRemote, safeSourceLabel, redactURLs } from './sources.js';
+import { remoteSource, localSource, acquireRemote, safeSourceLabel, redactURLs } from './sources.js';
 const asset = path => new URL(path, import.meta.url).href;
 const SERVER_MODELS_AVAILABLE = false; // Build sets false: weights are never published.
 import { RunMetrics, msText, rateText } from './metrics.js';
@@ -9,15 +9,24 @@ let imageData = null, imageURL = null, originalImage = null, imageStats = null;
 let run = null, loadStats = null, loadedConfig = null, loadNumber = 0, runNumber = 0;
 let output = '', gpuInfo = null;
 const history = [], evidence = [], logLines = [];
-const loadFields = ['backend', 'threads', 'context', 'vision-gpu', 'batch', 'ubatch', 'flash', 'source-kind', 'hf-repo', 'hf-revision', 'hf-file', 'hf-mmproj', 'model-url', 'mmproj-url', 'model-files', 'mmproj-file'];
+const loadFields = ['backend', 'context', 'vision-gpu', 'batch', 'ubatch', 'flash', 'source-kind', 'model-url', 'mmproj-url', 'model-files', 'mmproj-file'];
 const inputFields = ['image', 'example', 'clear', 'image-size', 'prompt', 'tokens', 'cache-prompt'];
 const time = () => performance.now();
+// Minimal WASM module that requires the Memory64 feature (memory section, flags 0x04).
+const HAS_MEM64 = WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 5, 3, 1, 4, 1]));
+if (!HAS_MEM64 && 'Suspending' in WebAssembly) {
+  // Safari 26+: has JSPI, lacks Memory64, and its Memory constructor silently ignores
+  // address:'i64', so wllama 3.6.1's support probe misreports and picks the Memory64
+  // build ("CompileError: Memory64 is not enabled"). Hiding Suspending makes
+  // needCompat() select the Asyncify compat build instead.
+  delete WebAssembly.Suspending;
+}
 function update() {
   $('load').disabled = busy || ready;
   $('unload').disabled = busy || !model;
   $('run').disabled = busy || !ready;
   $('probe').disabled = busy;
-  for (const id of loadFields) $(id).disabled = busy || ready || (id === 'threads' && !crossOriginIsolated);
+  for (const id of loadFields) $(id).disabled = busy || ready;
   for (const id of inputFields) $(id).disabled = busy;
   $('export').disabled = !history.length;
 }
@@ -73,7 +82,7 @@ function render() {
 }
 setInterval(render, 150); // Batch UI and log work; never rewrite the DOM on every native log/token.
 $('log-panel').addEventListener('toggle', render);
-$('capabilities').textContent = `跨源隔离：${crossOriginIsolated} · WebGPU API：${!!navigator.gpu} · JSPI：${typeof WebAssembly.Suspending === 'function'}`;
+$('capabilities').textContent = `跨源隔离：${crossOriginIsolated} · WebGPU API：${!!navigator.gpu} · JSPI：${typeof WebAssembly.Suspending === 'function'} · Memory64：${HAS_MEM64}`;
 async function probeGPU() {
   if (!navigator.gpu) throw new Error('浏览器没有 WebGPU API；请使用安全上下文或选择 CPU');
   const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -90,15 +99,36 @@ async function probeGPU() {
 }
 $('probe').onclick = () => withBusy(probeGPU);
 function sourceChanged() {
-  for (const kind of ['hf', 'url', 'files', 'server']) $(`source-${kind}`).hidden = $('source-kind').value !== kind;
+  for (const kind of ['url', 'files', 'server']) $(`source-${kind}`).hidden = $('source-kind').value !== kind;
 }
 $('source-kind').onchange = sourceChanged;
 if (!SERVER_MODELS_AVAILABLE || !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) $('server-option').remove();
 sourceChanged();
-if (!crossOriginIsolated) {
-  $('threads').value = 1;
-  $('thread-note').textContent = '此站点没有跨源隔离（GitHub Pages 默认如此）：CPU 固定单线程，WebGPU 仍可用。未启用 Service Worker。';
-} else $('thread-note').textContent = '已跨源隔离，可使用 WASM 多线程；最终实际线程数见加载结果。';
+// Both wllama 3.6.1 WASM builds import shared memory, so SharedArrayBuffer (cross-origin
+// isolation) is required even for single-thread CPU runs. GitHub Pages cannot set COOP/COEP
+// headers, so a minimal service worker injects them and the page reloads itself (bounded).
+async function ensureCrossOriginIsolated() {
+  if (crossOriginIsolated) { sessionStorage.removeItem('coi-reloads'); return; }
+  if (!('serviceWorker' in navigator)) {
+    $('coi-note').textContent = '此页面未跨源隔离，且浏览器不支持 Service Worker：无法启用 SharedArrayBuffer，wllama 无法运行。请使用开发服务器或支持 Service Worker 的浏览器。';
+    return;
+  }
+  const attempts = Number(sessionStorage.getItem('coi-reloads') || 0);
+  if (attempts >= 3) {
+    $('coi-note').textContent = '跨源隔离启用失败（已自动重试 3 次）：请清除本站点数据后刷新，或改用开发服务器。';
+    return;
+  }
+  $('coi-note').textContent = '正在启用跨源隔离（注入 COOP/COEP），页面将自动刷新…';
+  try {
+    await navigator.serviceWorker.register(asset('./coi-sw.js'));
+    sessionStorage.setItem('coi-reloads', String(attempts + 1));
+    location.reload();
+  } catch (error) {
+    $('coi-note').textContent = `跨源隔离启用失败：${error.message}`;
+  }
+}
+await ensureCrossOriginIsolated();
+if (crossOriginIsolated) $('coi-note').textContent = '已跨源隔离（SharedArrayBuffer 可用）。CPU 固定单线程；WebGPU 可选。';
 $('load').onclick = () => withBusy(async () => {
   const start = time();
   evidence.length = 0;
@@ -107,7 +137,7 @@ $('load').onclick = () => withBusy(async () => {
   try {
     const gpu = $('backend').value === 'gpu';
     const options = {
-      n_ctx: number('context', 1024, 16384), n_threads: crossOriginIsolated ? number('threads', 1, 32) : 1, n_parallel: 1,
+      n_ctx: number('context', 1024, 16384), n_threads: 1, n_parallel: 1,
       n_gpu_layers: gpu ? 99999 : 0, mmproj_offload: gpu && $('vision-gpu').checked,
       n_batch: number('batch', 32, 4096), n_ubatch: number('ubatch', 32, 2048),
       jinja: true, reasoning: false, log_level: 2,
@@ -135,8 +165,7 @@ $('load').onclick = () => withBusy(async () => {
       $('status').textContent = '读取本地 GGUF（不上传）…';
     } else {
       let source;
-      if (kind === 'hf') source = hfSource({ repo: $('hf-repo').value, revision: $('hf-revision').value, file: $('hf-file').value, mmproj: $('hf-mmproj').value });
-      else if (kind === 'url') source = remoteSource({ url: $('model-url').value, mmprojUrl: $('mmproj-url').value }, location.href);
+      if (kind === 'url') source = remoteSource({ url: $('model-url').value, mmprojUrl: $('mmproj-url').value }, location.href);
       else if (kind === 'server' && SERVER_MODELS_AVAILABLE && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) source = { url: asset('./MiniCPM-V-4_6-Q8_0.gguf'), mmprojUrl: asset('./mmproj-MiniCPM-V-4_6-F16.gguf') };
       else throw new Error('不支持的模型来源');
       sourceSummary = { kind, ...safeSourceLabel(source) };

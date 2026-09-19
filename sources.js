@@ -1,20 +1,3 @@
-export const DEFAULT_HF = {
-  repo: 'openbmb/MiniCPM-V-4.6-gguf', revision: 'main',
-  file: 'MiniCPM-V-4_6-Q8_0.gguf', mmproj: 'mmproj-MiniCPM-V-4_6-F16.gguf',
-};
-function filePath(value, label) {
-  if (!value || value !== value.trim() || value.split('/').some(p => !p || p === '.' || p === '..') || /[\\?#\u0000-\u001f]/.test(value) || !value.toLowerCase().endsWith('.gguf')) throw new Error(`${label} 必须是仓库内的 GGUF 文件路径`);
-  return value.split('/').map(encodeURIComponent).join('/');
-}
-export function hfSource({ repo, revision, file, mmproj }) {
-  if (!/^[\w.-]+\/[\w.-]+$/.test(repo) || repo.split('/').some(p => p === '.' || p === '..')) throw new Error('HF 仓库须为 owner/repository，不是网页 URL');
-  if (!revision || revision !== revision.trim() || /[\u0000-\u001f]/.test(revision)) throw new Error('请输入有效 revision（分支、tag 或 commit）');
-  const base = `https://huggingface.co/${repo}/resolve/${encodeURIComponent(revision)}/`;
-  const source = { url: base + filePath(file, '模型') };
-  if (mmproj) source.mmprojUrl = base + filePath(mmproj, 'mmproj');
-  firstShard(source.url);
-  return source;
-}
 function firstShard(url) {
   const match = new URL(url).pathname.match(/-(\d{5})-of-(\d{5})\.gguf$/i);
   if (match && (match[1] !== '00001' || Number(match[2]) < 1)) throw new Error('远程分片模型请填写第一片 -00001-of-NNNNN.gguf');
