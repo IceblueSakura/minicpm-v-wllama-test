@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GGUF 浏览器推理 · 性能实验台</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101621;color:#e5eaf3}body{max-width:1160px;margin:30px auto;padding:0 20px}h1{font-size:27px}h2{font-size:19px;margin-top:0}small,.muted{color:#a8b5cc}section{background:#1a2332;padding:20px;border:1px solid #334155;border-radius:12px;margin:16px 0}label{display:inline-block;margin:7px 14px 7px 0}button,select,input,textarea{font:inherit;border-radius:6px;padding:8px;background:#25344c;color:inherit;border:1px solid #526783}button{cursor:pointer;margin:3px}button:disabled{opacity:.45;cursor:default}textarea{display:block;box-sizing:border-box;width:100%;min-height:70px;margin:12px 0}progress{width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere}#output{min-height:70px;line-height:1.6}#preview{display:none;max-width:100%;max-height:200px;margin:10px 0}#logs{max-height:280px;overflow:auto;font-size:12px}#status,#phase{color:#93c5fd}input[type=number]{width:85px}input[type=text],input[type=url]{max-width:100%;box-sizing:border-box}#source-hf label,#source-url label,#source-files label{display:block}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.card{background:#101a2b;padding:14px;border-radius:8px}.card strong{display:block;font-size:25px;color:#9ad5ff;margin:6px 0}.card small{display:block;font-size:12px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;border-bottom:1px solid #334155;padding:9px;white-space:nowrap}#gpu-info{font-size:13px}details{margin:10px 0}.warn{color:#f4ca7c}#timeline{font-size:13px;max-height:190px;overflow:auto}code{color:#9ad5ff}
+</style>
+<h1>GGUF / 浏览器推理性能实验台</h1>
+<p class="muted">可选模型来源 · wllama 3.6.1 · 推理和图片处理均在访问设备的浏览器内完成</p>
+<section>
+<h2>1 · 设备与模型</h2>
+<div id="capabilities"></div>
+<p id="thread-note" class="warn"></p>
+<label>模型来源 <select id="source-kind"><option value="hf">Hugging Face</option><option value="url">自定义下载 URL</option><option value="files">本地 GGUF 文件</option><option value="server" id="server-option">本机服务器预置模型（仅 localhost）</option></select></label>
+<div id="source-hf">
+<label>仓库 <input id="hf-repo" type="text" value="openbmb/MiniCPM-V-4.6-gguf" size="36"></label>
+<label>Revision <input id="hf-revision" type="text" value="main" size="20"></label>
+<label>主模型文件 <input id="hf-file" type="text" value="MiniCPM-V-4_6-Q8_0.gguf" size="42"></label>
+<label>mmproj 文件（可空） <input id="hf-mmproj" type="text" value="mmproj-MiniCPM-V-4_6-F16.gguf" size="42"></label>
+<p class="muted">浏览器直接从公开 HF 仓库下载 GGUF，文件名以仓库实际目录为准。建议固定 commit；不支持私有/受限仓库的 Token 登录。分片填写第一片。</p>
+</div>
+<div id="source-url" hidden>
+<label>主模型 HTTPS 直链 <input id="model-url" type="url" size="60" placeholder="https://example.com/model.gguf"></label>
+<label>mmproj HTTPS 直链（可空） <input id="mmproj-url" type="url" size="60" placeholder="https://example.com/mmproj.gguf"></label>
+<p class="muted">目标服务器须允许浏览器跨域下载（CORS），并正确返回文件长度。分片填第一片；同一目录须包含其余分片。请勿使用 HF /blob/ 网页地址。</p>
+</div>
+<div id="source-files" hidden>
+<label>主模型 / 全部分片 <input id="model-files" type="file" accept=".gguf" multiple></label>
+<label>视觉 projector（可选） <input id="mmproj-file" type="file" accept=".gguf"></label>
+<p class="muted">文件只在当前浏览器读取，不上传，不复制进下载缓存。刷新后需重新选择。mmproj 请与主模型分开选择。</p>
+</div>
+<div id="source-server" hidden><p class="muted">使用原测试服务器上的 MiniCPM-V 4.6 Q8_0 与 F16 mmproj；GitHub Pages 构建不会包含这些权重。</p></div>
+<p class="muted">可更换受当前 llama.cpp 支持的 GGUF 模型；未提供 mmproj 时仅测试文本。默认关闭 thinking，其他模型须自行确认模板、内存和兼容性。下载后的公开模型由 wllama 缓存于浏览器。</p>
+<button id="probe">检查 WebGPU 设备</button><pre id="gpu-info">尚未探测；API 存在不代表硬件卸载成功。</pre>
+<label>后端 <select id="backend"><option value="gpu">WebGPU</option><option value="cpu">CPU</option></select></label>
+<label>CPU 线程 <input id="threads" type="number" value="4" min="1" max="32"></label>
+<label>上下文 <input id="context" type="number" value="4096" min="1024" max="16384" step="1024"></label>
+<label><input id="vision-gpu" type="checkbox" checked>视觉编码也卸载到 GPU</label>
+<details><summary>批处理 / 注意力参数（修改后重新加载模型）</summary>
+<label>n_batch <input id="batch" type="number" value="2048" min="32" max="4096"></label>
+<label>n_ubatch <input id="ubatch" type="number" value="512" min="32" max="2048"></label>
+<label>Flash Attention <select id="flash"><option value="auto">后端默认</option><option value="on">开启</option><option value="off">关闭</option></select></label>
+<p class="muted">CPU 线程不是 GPU 线程数。请求卸载不等于全部算子在 GPU 执行；设备与实际 backend 证据见下方。</p>
+</details>
+<div><button id="load">加载模型</button><button id="unload" disabled>卸载</button><button id="reset">刷新并终止当前计算</button></div>
+<progress id="progress" value="0" max="1"></progress><p id="status" role="status">尚未加载</p>
+<div id="load-metrics" class="muted">模型获取与初始化耗时会分别显示；不计入 TTFT。</div>
+<pre id="backend-evidence">实际 backend：尚未加载</pre>
+</section>
+<section>
+<h2>2 · 输入与生成</h2>
+<label>图片 <input id="image" type="file" accept="image/png,image/jpeg,image/webp"></label>
+<button id="example">示例图片</button><button id="clear">清除图片</button>
+<label>最长边 <select id="image-size"><option value="448">448 px</option><option value="896">896 px</option><option value="0">原始尺寸</option></select></label>
+<p id="image-metrics" class="muted">未选择图片。图片预处理在点击生成前完成，不计入 TTFT。</p>
+<img id="preview" alt="待分析图片">
+<textarea id="prompt">请用中文描述这张图片。</textarea>
+<label>最多输出 token <input id="tokens" type="number" value="128" min="1" max="2048"></label>
+<label><input id="cache-prompt" type="checkbox">复用提示词缓存（对比性能时关闭）</label>
+<button id="run" disabled>生成</button><span id="phase"></span>
+<pre id="output" aria-live="polite"></pre><p id="timings" class="muted"></p>
+</section>
+<section>
+<h2>3 · 当前请求指标 <button id="export" disabled>导出 JSON</button></h2>
+<div class="cards">
+<div class="card">TTFT<strong id="metric-ttft">—</strong><small>调用开始 → 首个非空文本 delta</small></div>
+<div class="card">生成速度<strong id="metric-speed">—</strong><small>底层 predicted_per_second；不是 chunk/s</small></div>
+<div class="card">总耗时<strong id="metric-total">—</strong><small>请求开始 → 流结束</small></div>
+<div class="card">首字后耗时<strong id="metric-after">—</strong><small>首个文本 delta → 流结束</small></div>
+<div class="card">Prompt eval<strong id="metric-prefill">—</strong><small>底层口径；可能包含图像处理，不可直接相加</small></div>
+<div class="card">图像 token prefill<strong id="metric-vision">—</strong><small>日志报告：图像 embedding 进入 LLM 的耗时，不是视觉编码</small></div>
+<div class="card">输出 token<strong id="metric-tokens">—</strong><small>底层计数；没有计数时不从字符数估算</small></div>
+<div class="card">Prompt / 缓存 token<strong id="metric-cache">—</strong><small>底层 prompt_n / cache_n</small></div>
+</div>
+<p class="muted">这些指标可能重叠。Prompt eval 包含视觉编码和图文 prefill；视觉编码器的独立耗时当前 API 未暴露。日志时间线是主线程收到日志的时间，不是 GPU timestamp。缺失值显示“—”，不会用相减估算冒充独立阶段实测。</p>
+<pre id="timeline">等待请求</pre>
+</section>
+<section>
+<h2>4 · 本页请求记录</h2>
+<p class="muted">第一次推理与后续推理分开比较；相同图片、参数和缓存设置才可对照。刷新后清空。导出只含性能与参数，不含提示词和图片内容。</p>
+<div class="table-wrap"><table><thead><tr><th>请求</th><th>配置</th><th>输入</th><th>TTFT</th><th>总耗时</th><th>生成 tok/s</th><th>缓存 token</th><th>状态</th></tr></thead><tbody id="history"></tbody></table></div>
+</section>
+<details id="log-panel"><summary>运行日志 / 错误详情</summary><pre id="logs"></pre></details>
+<script type="module" src="./app.js"></script>
+</html>
