@@ -2,7 +2,8 @@
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" id="themeColor" content="#FAFBF8">
 <title>MiniCPM</title>
 <script>
   // Resolve the theme before first paint so dark mode never flashes light.
@@ -17,28 +18,22 @@
 /* ---------- Tokens: 青瓷 (model) / 墨 (you) / 朱砂 (on air) ---------- */
 :root{
   color-scheme:light;
-  --chrome:#F1F3EE; --surface:#FAFBF8; --raised:#FFFFFF; --sunken:#EBEEE8;
-  --ink:#17211D; --ink-2:#47544E; --ink-3:#63706A;
-  --line:#DFE3DB; --line-2:#C5CCC3;
-  --jade:#0B6E5B; --jade-wave:#12A383; --jade-soft:#DCEDE6; --on-jade:#FFFFFF;
-  --cinnabar:#C2351B; --cinnabar-soft:#FAE5DD; --on-cinnabar:#FFFFFF;
-  --amber:#855600; --amber-soft:#F6EBD3;
-  --you-wave:#2C3833; --user-bubble:#E9EDE6; --overlap:#C2351B22;
+  /* tokens:light */
+  --chrome:#F1F3EE; --surface:#FAFBF8; --raised:#FFFFFF; --sunken:#EBEEE8; --ink:#17211D; --ink-2:#47544E; --ink-3:#5F6C66; --line:#DFE3DB; --line-2:#C5CCC3; --control:#838E87; --jade:#0B6E5B; --jade-wave:#12A383; --jade-soft:#DCEDE6; --on-jade:#FFFFFF; --cinnabar:#C2351B; --cinnabar-soft:#FAE5DD; --on-cinnabar:#FFFFFF; --amber:#855600; --amber-soft:#F6EBD3; --you-wave:#2C3833; --user-bubble:#E9EDE6; --overlap:#C2351B22;
+  /* /tokens */
   --shadow:0 1px 2px #17211D0F,0 8px 28px #17211D14;
   --font:'Sarasa UI SC','PingFang SC','HarmonyOS Sans SC','MiSans','Noto Sans CJK SC','Microsoft YaHei UI','Microsoft YaHei',system-ui,sans-serif;
   --mono:'JetBrains Mono','Sarasa Mono SC',ui-monospace,'SF Mono',Consolas,monospace;
   --nav-w:264px; --thread:760px;
   --ease:cubic-bezier(.2,.7,.2,1);
+  --safe-t:env(safe-area-inset-top,0px); --safe-r:env(safe-area-inset-right,0px);
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-l:env(safe-area-inset-left,0px);
 }
 :root[data-theme=dark]{
   color-scheme:dark;
-  --chrome:#0F1412; --surface:#141A18; --raised:#1B2320; --sunken:#0B0F0D;
-  --ink:#E8EDE8; --ink-2:#B1BCB5; --ink-3:#8E9A93;
-  --line:#28322E; --line-2:#3C4843;
-  --jade:#5ADBB8; --jade-wave:#3FD0AA; --jade-soft:#14332A; --on-jade:#06231B;
-  --cinnabar:#FF8466; --cinnabar-soft:#3B1C15; --on-cinnabar:#2B0C05;
-  --amber:#E9BE6C; --amber-soft:#35290F;
-  --you-wave:#D5DDD7; --user-bubble:#212A27; --overlap:#FF846628;
+  /* tokens:dark */
+  --chrome:#0F1412; --surface:#141A18; --raised:#1B2320; --sunken:#0B0F0D; --ink:#E8EDE8; --ink-2:#B1BCB5; --ink-3:#8E9A93; --line:#28322E; --line-2:#3C4843; --control:#6B7770; --jade:#5ADBB8; --jade-wave:#3FD0AA; --jade-soft:#14332A; --on-jade:#06231B; --cinnabar:#FF8466; --cinnabar-soft:#3B1C15; --on-cinnabar:#2B0C05; --amber:#E9BE6C; --amber-soft:#35290F; --you-wave:#D5DDD7; --user-bubble:#212A27; --overlap:#FF846628;
+  /* /tokens */
   --shadow:0 1px 2px #0006,0 10px 32px #0008;
 }
 
@@ -64,6 +59,7 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .btn:hover{background:var(--sunken)}
 .btn.primary{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .btn.primary:hover{opacity:.88}
+.btn:disabled{opacity:.45}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:99px;background:var(--sunken);color:var(--ink-2);font-size:12px;white-space:nowrap}
 .pill.ok{background:var(--jade-soft);color:var(--jade)}
 .pill.warn{background:var(--amber-soft);color:var(--amber)}
@@ -182,6 +178,33 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .msg-ai td{vertical-align:top;padding:8px 14px 8px 0;border-bottom:1px solid var(--line)}
 .msg-ai tr:last-child td{border-bottom:0}
 .msg-ai td:first-child{font-weight:500;white-space:nowrap}
+.msg-ai .content h3{margin:16px 0 4px;font-size:15px;font-weight:600}
+.msg-ai .content h3:first-child{margin-top:0}
+.msg-ai .content ul,.msg-ai .content ol{margin:6px 0 10px;padding-left:1.5em}
+.msg-ai .content li+li{margin-top:3px}
+.msg-ai .content blockquote{margin:10px 0;padding:1px 0 1px 12px;border-left:2px solid var(--line-2);color:var(--ink-2)}
+.msg-ai .content a{color:var(--jade);text-decoration:underline;text-underline-offset:3px}
+.msg-ai .content code{padding:1px 5px;border-radius:5px;background:var(--sunken);font:.9em var(--mono)}
+.code{margin:10px 0;border-radius:10px;background:var(--sunken);overflow:hidden}
+.code-head{display:flex;align-items:center;justify-content:space-between;min-height:32px;padding:0 4px 0 12px;font-size:12px;color:var(--ink-3)}
+.code-head button{min-height:28px;padding:0 8px;border-radius:6px;font-size:12px}
+.code-head button:hover{background:var(--line);color:var(--ink)}
+.code pre{margin:0;padding:2px 12px 12px;overflow-x:auto;font:12.5px/1.65 var(--mono);tab-size:2}
+.msg-ai .content .code code{padding:0;background:none;font:inherit}
+.artifact{display:flex;align-items:center;gap:10px;margin-top:10px;padding:9px 10px 9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--raised)}
+.artifact>svg{color:var(--ink-2)}
+.artifact div{flex:1;min-width:0}
+.artifact b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.artifact small{display:block;font-size:12.5px;color:var(--ink-3)}
+.cut{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px;font-size:13px;color:var(--ink-3)}
+.ask{padding:12px 14px;border:1px solid var(--line-2);border-radius:12px;background:var(--raised)}
+.ask-head{display:flex;align-items:center;gap:8px;font-weight:600}
+.ask-head svg{color:var(--jade)}
+.ask p{margin-top:2px;font-size:13.5px;color:var(--ink-2)}
+.ask-q{display:block;margin-top:8px;padding:7px 10px;border-radius:8px;background:var(--sunken);font-size:13.5px;overflow-wrap:anywhere}
+.ask .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.net-note{display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px;font-size:13px;color:var(--ink-3)}
+.net-note svg{width:15px;height:15px}
 .caret::after{content:'';display:inline-block;width:7px;height:1em;margin-left:2px;vertical-align:-.14em;background:var(--jade-wave);animation:blink 1s steps(2) infinite}
 .msg-tools{display:flex;align-items:center;gap:2px;margin:6px 0 0 -7px;min-height:30px;color:var(--ink-3);opacity:.0;transition:opacity .15s}
 .msg-ai:hover .msg-tools,.msg-ai:focus-within .msg-tools,.msg-ai:last-child .msg-tools{opacity:1}
@@ -240,6 +263,8 @@ details[open]>.live-head svg.chev{transform:rotate(90deg)}
 .turn-act:hover{color:var(--ink)}
 .turn .pill{padding:0 6px;font-size:11.5px}
 .live-end{margin-top:2px;font-size:12.5px;color:var(--ink-3)}
+.turn-gap{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-3);white-space:nowrap}
+.turn-gap::before,.turn-gap::after{content:'';flex:1;height:1px;background:var(--line)}
 
 /* ---------- Composer ---------- */
 .composer{position:relative;border:1px solid var(--line-2);border-radius:14px;background:var(--raised);padding:6px;box-shadow:0 1px 2px #17211D0A;transition:border-color .15s,box-shadow .15s}
@@ -283,6 +308,7 @@ details[open]>.live-head svg.chev{transform:rotate(90deg)}
 .banner .txt b{font-weight:600}
 .banner .txt span{color:var(--ink-2)}
 .banner .btn{min-height:30px;padding:0 10px;font-size:13px}
+.composer.temp{border-style:dashed}
 
 /* ---------- Empty task ---------- */
 .hero{max-width:var(--thread);width:100%;margin:0 auto;padding:0 16px 20px;text-align:center}
@@ -311,7 +337,7 @@ details[open]>.live-head svg.chev{transform:rotate(90deg)}
 .tag{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:7px;background:#0B0F0DC7;color:#F1F4F1;font-size:12.5px;backdrop-filter:blur(8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 button.tag:hover{background:#0B0F0DF0}
 .tag .rec{width:7px;height:7px;border-radius:50%;background:#FF6A4D;animation:lamp 1.6s ease-in-out infinite}
-.paused{position:absolute;inset:0;z-index:4;display:grid;place-content:center;justify-items:center;gap:6px;background:#0B0F0DE6;color:#E8EDE8;text-align:center;padding:20px}
+.paused{position:absolute;inset:0;z-index:4;display:grid;place-content:center;justify-items:center;gap:6px;background:#0B0F0DE6;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#E8EDE8;text-align:center;padding:20px}
 .paused svg{width:26px;height:26px}
 .paused small{color:#A9B5AE}
 /* Mock: shared window */
@@ -354,6 +380,16 @@ button.tag:hover{background:#0B0F0DF0}
 .ctl.end{margin-left:6px;min-width:64px;background:var(--cinnabar);color:var(--on-cinnabar);font-weight:600}
 .ctl.end:hover{filter:brightness(1.08);background:var(--cinnabar);color:var(--on-cinnabar)}
 .ctl-sep{width:1px;height:28px;margin:0 3px;background:var(--line)}
+.ctl.resume{min-width:64px;background:var(--jade);color:var(--on-jade);font-weight:600}
+.ctl.resume:hover{filter:brightness(1.08);background:var(--jade);color:var(--on-jade)}
+.ctl.resume:disabled{background:var(--sunken);color:var(--ink-3);opacity:1;filter:none}
+.dock-note{grid-column:1/-1;display:flex;flex-direction:column;gap:1px;padding:0 6px 2px 0;min-width:0}
+.dock-note b{font-weight:600}
+.dock-note small{font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+.dock-note .btn{align-self:flex-start;margin-top:6px}
+.dock[data-phase=held] .lamp,.dock[data-phase=reconnect] .lamp{background:var(--amber)}
+.dock[data-phase=reconnect] .lamp{animation:lamp 1s ease-in-out infinite}
+.dock[data-phase=held] .tracks,.dock[data-phase=reconnect] .tracks{opacity:.45}
 
 /* ---------- Inspector ---------- */
 .inspector{width:296px;min-height:0;overflow-y:auto;background:var(--chrome);border-left:1px solid var(--line);padding:0 14px 16px}
@@ -385,8 +421,8 @@ button.tag:hover{background:#0B0F0DF0}
 .row b{display:block;font-weight:500}
 .row small{display:block;font-size:13px;color:var(--ink-3);line-height:1.5}
 .row .ctrl{flex:none;display:flex;align-items:center;gap:8px}
-.row select,.row input[type=text],.row input[type=password]{height:34px;min-width:190px;max-width:100%;padding:0 9px;border-radius:8px;border:1px solid var(--line-2);background:var(--raised)}
-.sw{width:40px;height:24px;border-radius:99px;background:var(--line-2);position:relative;flex:none;transition:background .15s}
+.row select,.row input[type=text],.row input[type=password]{height:34px;min-width:190px;max-width:100%;padding:0 9px;border-radius:8px;border:1px solid var(--control);background:var(--raised)}
+.sw{width:40px;height:24px;border-radius:99px;background:var(--control);position:relative;flex:none;transition:background .15s}
 .sw::after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s var(--ease)}
 .sw[aria-checked=true]{background:var(--jade-wave)}
 .sw[aria-checked=true]::after{transform:translateX(16px)}
@@ -398,7 +434,7 @@ button.tag:hover{background:#0B0F0DF0}
 .voice[aria-checked=true]{border-color:var(--jade);box-shadow:inset 0 0 0 1px var(--jade)}
 .voice b{display:block;font-weight:500}
 .voice small{display:block;font-size:12.5px;color:var(--ink-3)}
-.set-in textarea{display:block;width:100%;min-height:92px;margin-top:8px;padding:9px 11px;resize:vertical;border:1px solid var(--line-2);border-radius:10px;background:var(--raised);line-height:1.6}
+.set-in textarea{display:block;width:100%;min-height:92px;margin-top:8px;padding:9px 11px;resize:vertical;border:1px solid var(--control);border-radius:10px;background:var(--raised);line-height:1.6}
 
 /* ---------- Menu & toast ---------- */
 .menu{position:fixed;z-index:30;min-width:220px;max-width:min(340px,calc(100vw - 16px));padding:5px;border-radius:12px;background:var(--raised);border:1px solid var(--line-2);box-shadow:var(--shadow);animation:pop .14s var(--ease)}
@@ -421,6 +457,74 @@ button.tag:hover{background:#0B0F0DF0}
 .toast{position:fixed;left:50%;top:60px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 24px);padding:9px 14px;border-radius:10px;background:var(--ink);color:var(--surface);box-shadow:var(--shadow);animation:pop .16s var(--ease)}
 .toast button{font-weight:600;text-decoration:underline;text-underline-offset:3px}
 
+/* ---------- Privacy signals and advanced parameters ---------- */
+.hero>.privacy{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:13px;color:var(--jade)}
+.hero>.privacy svg{width:15px;height:15px}
+.assure{display:flex;gap:10px;margin-top:4px;padding:12px 14px;border-radius:12px;background:var(--jade-soft)}
+.assure svg{color:var(--jade);margin-top:2px}
+.assure b{display:block;font-weight:600}
+.assure small{display:block;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.disclose{margin-top:22px;border-top:1px solid var(--line)}
+.disclose>summary{display:flex;align-items:center;gap:6px;min-height:44px;font-weight:500;cursor:pointer;list-style:none}
+.disclose>summary::-webkit-details-marker{display:none}
+.disclose>summary svg{width:15px;height:15px;color:var(--ink-3);transition:transform .15s}
+.disclose[open]>summary svg{transform:rotate(90deg)}
+.disclose>summary span{margin-left:auto;font-size:13px;font-weight:400;color:var(--ink-3)}
+.param{padding:12px 0;border-bottom:1px solid var(--line)}
+.param-top{display:flex;align-items:baseline;gap:8px}
+.param-top b{font-weight:500}
+.param-top output{margin-left:auto;font-size:13px;color:var(--ink-2)}
+.param input{display:block;width:100%;margin:8px 0 2px;accent-color:var(--jade)}
+.param small{display:block;font-size:13px;line-height:1.5;color:var(--ink-3)}
+.tech{font:12px var(--mono);color:var(--ink-3)}
+.back{transform:rotate(180deg)}
+.sw:disabled{opacity:.5}
+.btn.danger{color:var(--cinnabar)}
+.link{text-decoration:underline;text-underline-offset:3px;color:var(--ink-2)}
+
+/* ---------- First run, app lock, permission primer, download ---------- */
+.gate{position:fixed;inset:0;z-index:50;display:flex;overflow-y:auto;background:var(--surface);padding:calc(24px + var(--safe-t)) calc(24px + var(--safe-r)) calc(24px + var(--safe-b)) calc(24px + var(--safe-l))}
+.gate-in{width:100%;max-width:440px;margin:auto;display:flex;flex-direction:column;min-height:min(100%,560px)}
+.gate .mark{width:44px;height:44px;flex:none;fill:none;stroke-width:2.2;stroke-linecap:round}
+.gate .mark .a{stroke:var(--ink)}.gate .mark .b{stroke:var(--jade-wave)}
+.gate h1{margin-top:16px;font-size:24px;font-weight:600;line-height:1.35}
+.gate-in>p{margin-top:6px;color:var(--ink-2)}
+.ob-list{display:grid;gap:14px;margin:24px 0 0;padding:0;list-style:none}
+.ob-list li{display:flex;gap:12px}
+.ob-list svg{margin-top:3px;color:var(--jade)}
+.ob-list b{display:block;font-weight:600}
+.ob-list small{display:block;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.ob-device{margin-top:14px;font-size:13px;color:var(--ink-3)}
+.ob-models{display:grid;gap:8px;margin-top:10px}
+.ob-models .voice{align-items:flex-start;padding:12px}
+.ob-models .voice>span{min-width:0;flex:1}
+.ob-models b{display:flex;align-items:center;gap:6px}
+.ob-foot{display:grid;gap:10px;margin-top:auto;padding-top:24px}
+.ob-cta{min-height:44px;width:100%;font-size:15px}
+.ob-alt{justify-self:center;min-height:32px;font-size:13.5px}
+.gate .note{margin-top:12px}
+.lock{align-items:center;justify-content:center;text-align:center}
+.lock .gate-in{align-items:center;min-height:0}
+.lock .ob-cta{width:auto;min-width:200px;margin-top:24px}
+.dl{margin:12px 0 2px}
+.dl-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.dl-bar i{display:block;height:100%;border-radius:3px;background:var(--jade-wave);transition:width .3s linear}
+.dl[data-status=paused] .dl-bar i,.dl[data-status=wifi] .dl-bar i{background:var(--ink-3)}
+.dl[data-status=failed] .dl-bar i{background:var(--amber)}
+.dl small{display:block;margin-top:6px;font-size:13px;color:var(--ink-2)}
+.dl .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.primer{padding:10px 9px;max-width:300px}
+.primer>svg{color:var(--jade)}
+.primer b{display:block;margin-top:6px;font-size:15px;font-weight:600}
+.primer p{margin-top:2px;font-size:13.5px;color:var(--ink-2)}
+.primer .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.temp-tag{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.temp-tag svg{width:15px;height:15px}
+
+/* ---------- Parts that only exist in the compact form ---------- */
+.ctl.only-compact,.live-cap,.hero .mark,.grip{display:none}
+.app.bar-on .settings{margin-top:42px;height:calc(100% - 42px)}
+
 /* ---------- Motion ---------- */
 @keyframes lamp{50%{opacity:.35}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -428,6 +532,7 @@ button.tag:hover{background:#0B0F0DF0}
 @keyframes pop{from{opacity:0;translate:0 4px}}
 @keyframes stage-in{from{opacity:0;transform:scale(.985)}}
 @keyframes dock-in{from{opacity:0;transform:translateY(6px)}}
+@keyframes sheet-in{from{transform:translateY(100%)}}
 @keyframes handheld{to{transform:translate(-1%,.6%) scale(1.01)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
@@ -439,55 +544,208 @@ button.tag:hover{background:#0B0F0DF0}
   .dock{grid-template-columns:auto minmax(0,1fr);row-gap:6px}
   .dock-ctrl{grid-column:1/-1;justify-content:center}
 }
-@media (max-width:820px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .work{grid-column:1}
-  .app .nav{position:fixed;top:0;bottom:0;left:0;width:min(300px,86vw);z-index:22;box-shadow:var(--shadow);transform:translateX(-102%);visibility:hidden;transition:transform .22s var(--ease),visibility .22s}
+/* ---------- Compact form ----------
+ * Phones, small windows and landscape phones. Same DOM, state and tokens as the
+ * desktop form; only the shell changes. Conversation is the root page, the task
+ * list becomes a secondary drawer, and menus become bottom sheets.
+ * The query is duplicated in COMPACT_QUERY in the script. */
+@media (max-width:820px),(max-height:480px) and (pointer:coarse){
+  html,body{overscroll-behavior:none}
+  body{font-size:15px;-webkit-tap-highlight-color:transparent}
+  button,summary{touch-action:manipulation}
+  .app{grid-template-columns:minmax(0,1fr);height:var(--app-h,100dvh)}
+  .work{grid-column:1;padding:0 var(--safe-r) 0 var(--safe-l)}
+  .nav-resizer,.only-wide,.nav kbd{display:none}
+  .btn{min-height:44px}
+  .toast{top:calc(var(--safe-t) + 60px)}
+
+  /* Header: menu, conversation, new */
+  .head{height:calc(52px + var(--safe-t));padding:var(--safe-t) 4px 0;gap:0}
+  .head .icon-btn{width:44px;height:44px;border-radius:12px}
+  .head-title{flex:1;min-width:0;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;padding:0 6px;border-radius:12px;font-size:15px;line-height:1.3;text-align:center}
+  .head-title .ht-main{display:flex;align-items:center;gap:2px;max-width:100%;min-width:0}
+  .head-title b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .head-title small{font-size:12px;font-weight:400;color:var(--ink-3)}
+  .head-title svg{width:14px;height:14px;color:var(--ink-3)}
+  .head-rename{flex:1;width:auto;height:38px;font-size:16px;text-align:center}
+
+  /* Drawer: recent conversations, deliberately plain */
+  .app .nav{position:fixed;top:0;bottom:0;left:0;width:min(320px,86vw);z-index:22;padding:var(--safe-t) 12px calc(8px + var(--safe-b)) calc(12px + var(--safe-l));box-shadow:var(--shadow);transform:translateX(-102%);visibility:hidden;transition:transform .22s var(--ease),visibility .22s}
   .app.nav-open .nav{transform:none;visibility:visible}
   .app.nav-open .scrim{display:block;position:fixed;inset:0;z-index:21;background:#0006}
-  .nav-resizer,.only-wide{display:none}
-  .only-collapsed{display:inline-grid}
-  .settings{grid-column:1;grid-template-columns:minmax(0,1fr);grid-template-rows:52px auto minmax(0,1fr)}
-  .set-nav{display:flex;gap:4px;padding:8px 10px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
-  .set-nav .grp{display:none}
-  .set-nav button{width:auto;flex:none;white-space:nowrap;min-height:40px}
-  .set-body{padding:18px 16px 40px}
-  .body.has-stage{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(160px,38%) minmax(0,1fr) auto}
-  .stage{grid-row:1;padding:0 12px 8px}
-  .body.has-stage .conv{grid-column:1;grid-row:2}
-  .body.has-stage .bottom{grid-row:3}
-  .body.has-stage .thread{padding:4px 12px 12px}
-  .bottom{padding:0 10px calc(10px + env(safe-area-inset-bottom))}
-  .thread{padding:8px 14px 20px}
-  .dock{padding:8px}
-  .ctl{min-width:0;flex:1;height:48px}
-  .dock-ctrl{justify-content:stretch}
-  .ctl-sep{display:none}
-  .ctl.end{margin-left:2px}
-  .tracks{height:48px}
-  .icon-btn{width:40px;height:40px}
-  .composer .icon-btn{width:40px;height:40px}
-  .send-btn,.live-btn{height:40px}.send-btn{width:40px}
-  .task-more{opacity:1;width:40px;height:40px;top:2px}
-  .task-main{padding:9px 44px 9px 10px}
-  .nav-new kbd,.nav-search kbd{display:none}
-  .row{flex-wrap:wrap;gap:8px}
-  .row .ctrl{max-width:100%}
-  .starters{grid-template-columns:minmax(0,1fr)}
-  .starter{flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap}
-  .starter svg{margin:0}
+  .nav-new{min-height:48px;padding:0 8px;border:0;background:none;font-size:15px}
+  .nav-search{min-height:44px;margin-top:4px;padding:0 12px;border-radius:12px;background:var(--sunken)}
+  .nav-search input{font-size:16px}
+  .nav-list::before{content:'最近';display:block;padding:14px 10px 4px;font-size:13px;color:var(--ink-3)}
+  .nav-group,.task-meta,.task-more,.task-flag.sched,.meters,.res-note{display:none}
+  .task-main{min-height:44px;padding:10px;border-radius:10px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .task-main:active{background:var(--sunken)}
+  .task.current .task-main{background:var(--sunken);box-shadow:none}
+  .task-title b{font-weight:400;font-size:15px}
+  .engine{min-height:52px;padding:8px}
+  .nav-foot>.icon-btn{top:10px;width:44px;height:44px}
+
+  /* Conversation */
+  .body,.body.has-stage{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+  .body.has-stage .conv{grid-column:1}
+  .thread{padding:8px 16px 20px;gap:20px}
+  .body.has-stage .thread{padding:16px}
+  .msg-ai{font-size:16px;line-height:1.7}
+  .msg-user{max-width:86%}
+  .msg-user .bubble{padding:10px 15px;border-radius:20px 20px 6px 20px;font-size:16px;line-height:1.55}
+  .msg-user .bubble,.msg-ai .content{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .msg-ai table{display:block;overflow-x:auto;width:auto;max-width:100%;font-size:14.5px}
+  .code pre{font-size:13px}
+  .code-head button,.cut .btn,.ask .btn,.artifact .btn{min-height:44px}
+  .ask .acts{gap:8px}
+  .msg-tools{margin-left:-12px;gap:0;min-height:44px}
+  .msg-tools .icon-btn{width:44px;height:44px}
+  .msg-stat,.msg-ai:not(:last-child) .msg-tools{display:none}
+  .steps{font-size:14px}
+  .steps summary{min-height:44px}
+  .turn p{font-size:16px}
+  .turn-act{position:relative}
+  .turn-act::after{content:'';position:absolute;inset:-12px -6px}
+  .att button{width:36px;height:36px;margin-right:-8px}
+
+  /* Empty conversation */
+  .body.empty{grid-template-rows:minmax(0,1fr) auto;align-content:stretch;overflow:hidden;padding-bottom:0}
+  .body.empty .scroll{display:flex}
+  .body.empty .thread{margin:auto;width:100%;padding:0}
+  .hero{padding:0 24px}
+  .hero .mark{display:block;width:40px;height:40px;margin:0 auto 14px;fill:none;stroke-width:2.2;stroke-linecap:round}
+  .hero .mark .a{stroke:var(--ink)}.hero .mark .b{stroke:var(--jade-wave)}
+  .hero h1{font-size:24px}
+  .hero .scene-row{display:none}
+  .starters{order:-1;display:flex;gap:8px;overflow-x:auto;margin:0 -10px;padding:0 10px 2px;scrollbar-width:none}
+  .starters::-webkit-scrollbar{display:none}
+  .starter{flex:none;flex-direction:row;align-items:center;gap:7px;min-height:44px;padding:0 14px;border-radius:99px;background:var(--raised)}
+  .starter svg{width:16px;height:16px;margin:0}
   .starter small{display:none}
-  .hero h1{font-size:22px}
-  .toggle span{display:none}
-  .model-btn{height:40px}
-  .model-btn .full{display:none}
-  .model-btn .short{display:inline}
-  .toggle{width:40px;height:40px;padding:0;justify-content:center}
-  .head{padding:0 6px 0 4px}
-  .head-title{max-width:none;flex:0 1 auto}
-  .scene-chip{display:none}
+
+  /* Composer: one pill that grows into a card */
+  .bottom{padding:0 10px calc(8px + var(--safe-b))}
+  .bottom.live .bottom-in{max-width:var(--thread)}
+  .composer{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto;align-items:end;gap:0 2px;padding:4px;border-radius:26px}
+  .composer .modes{grid-row:1;grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding:6px 6px 2px}
+  .composer .chips{grid-row:2;grid-column:1/-1;padding:6px 6px 2px}
+  #textBox{grid-row:3;grid-column:2}
+  #recBox{grid-row:3;grid-column:1/-1}
+  #cRow{display:contents}
+  #cRow>*{grid-row:3}
+  #cRow>[data-action=attach]{grid-column:1}
+  #recBtn{grid-column:3}#liveBtn{grid-column:4}#sendBtn{grid-column:5}
+  #voiceReply,#thinking,#modelBtn,.c-gap{display:none}
+  .composer .icon-btn{width:44px;height:44px;border-radius:50%}
+  .composer textarea{min-height:44px;max-height:168px;padding:10px 4px;font-size:16px}
+  .live-btn,.send-btn{width:44px;height:44px;margin:0;padding:0;border-radius:50%;display:inline-grid;place-items:center}
+  .live-btn span{display:none}
+  .composer.has-input .live-btn{display:none}
+  .mode{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 6px 0 9px;border-radius:99px;background:var(--jade-soft);color:var(--jade);font-size:13px;position:relative}
+  .mode::after{content:'';position:absolute;inset:-6px 0}
+  .mode svg{width:15px;height:15px}
+
+  /* Live dock: the composer turns into this, the conversation keeps scrolling */
+  .dock{grid-template-columns:auto minmax(0,1fr);gap:6px 10px;padding:8px 10px 6px;border-radius:24px}
+  .dock-status{min-width:0;padding:4px 0}
+  .dock-status strong{font-size:15px}
+  .tracks{height:38px}
+  .lane{display:none}
+  .dock-ctrl{grid-column:1/-1;justify-content:stretch;gap:2px}
+  .ctl,.ctl.end{flex:1;min-width:0;height:56px;margin:0;border-radius:14px}
+  .ctl span,.dock-ctrl .ctl:not(.end) span{font-size:12px}
+  .ctl-sep,.ctl[data-action=live-freeze],.ctl[data-action=live-to-text]{display:none}
+  .ctl.only-compact{display:flex}
+  .dock-ctrl .ctl.keep{display:flex}
+  .dock-note{padding:2px 4px}
+  .banner{flex-wrap:wrap}
+  .banner .txt{flex-basis:calc(100% - 30px)}
+  .banner .btn{min-height:40px}
+
+  /* Camera: full-bleed viewfinder, controls on glass, transcript in a sheet */
+  .stage-on .stage{position:fixed;inset:0;z-index:12;padding:0}
+  .stage-on .viewport,.stage-on .viewport::after{border-radius:0}
+  .stage-on .stage-tags{top:calc(var(--safe-t) + 14px)}
+  .stage-on .corner.tl,.stage-on .corner.tr{top:calc(var(--safe-t) + 14px)}
+  .stage-on .corner.bl,.stage-on .corner.br{bottom:calc(var(--safe-b) + 214px)}
+  button.tag{position:relative;overflow:visible}
+  button.tag::after{content:'';position:absolute;inset:-8px}
+  .stage-on .tag svg{width:15px;height:15px}
+  .stage-on .mock-cam{top:-16%;height:116%}
+  .stage-on .bottom{position:fixed;left:var(--safe-l);right:var(--safe-r);bottom:0;z-index:13;
+    color-scheme:dark;--ink:#E8EDE8;--ink-2:#C9D3CC;--ink-3:#A9B5AE;--jade:#5ADBB8;--jade-wave:#3FD0AA;--jade-soft:#14332A;--you-wave:#D5DDD7;--line:#FFFFFF1F;--line-2:#FFFFFF33;--surface:#FFFFFF14;--raised:#0B0F0DB8;--sunken:#FFFFFF1F;--overlap:#FF846640;--cinnabar:#FF8466;--cinnabar-soft:#3B1C15;--on-cinnabar:#2B0C05}
+  .stage-on .dock{color:var(--ink);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .stage-on .live-cap{display:block;grid-row:1;grid-column:1/-1;min-height:48px;padding:2px 4px;text-align:left;font-size:16px;line-height:1.45;color:var(--ink)}
+  .stage-on .live-cap[data-who=user]{color:var(--ink-3)}
+  .stage-on .dock-note{grid-row:1}
+  .stage-on .dock.noted .live-cap{display:none}
+  .stage-on .dock-status,.stage-on .tracks{grid-row:2}
+  .stage-on .dock-ctrl{grid-row:3}
+  .stage-on .tracks{height:30px}
+  .stage-on .conv{position:fixed;left:0;right:0;bottom:0;height:68dvh;z-index:15;background:var(--surface);border-radius:20px 20px 0 0;box-shadow:var(--shadow);transform:translateY(102%);visibility:hidden;transition:transform .24s var(--ease),visibility .24s}
+  .stage-on.log-open .conv{transform:none;visibility:visible}
+  .stage-on.log-open .scrim{display:block;position:fixed;inset:0;z-index:14;background:#0006}
+
+  /* Bottom sheets */
+  .menu.sheet{left:0;right:0;bottom:0;width:100%;max-width:560px;min-width:0;max-height:min(84dvh,720px);margin:0 auto;padding:0 10px calc(10px + var(--safe-b));overflow-y:auto;border-width:1px 0 0;border-radius:20px 20px 0 0;animation:sheet-in .24s var(--ease)}
+  .sheet-scrim{position:fixed;inset:0;z-index:29;background:#0006}
+  .grip{display:block;position:sticky;top:0;height:22px;margin:0 -10px;background:var(--raised);touch-action:none}
+  .grip::after{content:'';display:block;width:36px;height:4px;margin:0 auto;position:relative;top:9px;border-radius:2px;background:var(--line-2)}
+  .menu.sheet .mi{min-height:48px;font-size:15px}
+  .menu.sheet .mi:active{background:var(--sunken)}
+  .menu.sheet .hint{max-width:none}
+  .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:4px 0 8px}
+  .menu .mi.tile{flex-direction:column;justify-content:center;gap:6px;min-height:80px;border-radius:14px;background:var(--sunken);text-align:center}
+  .menu .scene-row{flex-wrap:nowrap;justify-content:flex-start;gap:6px;margin:0 -10px;padding:2px 19px 6px;overflow-x:auto;scrollbar-width:none}
+  .menu .scene-opt{flex:none;min-height:40px}
+
+  .inspector{position:fixed;top:auto;left:0;right:0;bottom:0;width:auto;max-height:84dvh;padding:0 16px calc(16px + var(--safe-b));border-left:0;border-radius:20px 20px 0 0}
+
+  /* Settings: list, then detail */
+  .settings{grid-column:1;grid-template-columns:minmax(0,1fr);grid-template-rows:calc(52px + var(--safe-t)) minmax(0,1fr);padding:0 var(--safe-r) 0 var(--safe-l)}
+  .set-head{padding:var(--safe-t) 4px 0 16px}
+  .set-head:has(.back){padding-left:4px}
+  .set-head .icon-btn{width:44px;height:44px}
+    .set-nav{padding:6px 10px calc(16px + var(--safe-b));border-right:0}
+  .set-nav button{min-height:48px;font-size:15px;color:var(--ink)}
+  .set-nav button::after{content:'›';margin-left:auto;font-size:20px;line-height:1;color:var(--ink-3)}
+  .settings.at-root .set-body,.settings:not(.at-root) .set-nav{display:none}
+  .set-body{padding:12px 16px calc(32px + var(--safe-b))}
+  .set-in h2{display:none}
+  .row .ctrl{flex:0 1 auto;min-width:0}
+  .row .ctrl:has(>.sw,>.btn,>.pill){flex:none}
+  .row:has(.ctrl>.btn+.btn){flex-wrap:wrap;gap:8px}
+  .row select{min-width:0;width:auto;max-width:48vw;height:44px;font-size:16px}
+  .row:has(input[type=text],input[type=password]){flex-wrap:wrap;gap:8px}
+  .row:has(input[type=text],input[type=password]) .ctrl,.row input[type=text],.row input[type=password]{width:100%;font-size:16px;height:44px}
+  .gate-in{max-width:520px;min-height:100%}
+  .lock .gate-in{min-height:0}
+  .ob-cta{min-height:50px;border-radius:14px}
+  .ob-alt{min-height:44px}
+  .primer{max-width:none;padding:6px 9px 8px}
+  .primer .btn{flex:1}
+  .sw{width:52px;height:32px}
+  .sw::before{content:'';position:absolute;inset:-6px 0}
+  .sw::after{width:26px;height:26px}
+  .sw[aria-checked=true]::after{transform:translateX(20px)}
+  .set-in textarea{font-size:16px}
+  .param input{height:32px}
 }
-@media (max-width:420px){.ctl span{font-size:11px}.dock-status{min-width:96px}}
+@media (max-height:560px) and (max-width:820px){.hero .mark,.hero>p{display:none}}
+/* Landscape phones: the dock takes one row, on camera it moves beside the picture */
+@media (max-height:480px) and (pointer:coarse) and (orientation:landscape){
+  .dock{grid-template-columns:auto minmax(80px,1fr) auto}
+  .dock-ctrl{grid-column:auto}
+  .ctl,.ctl.end{flex:none;width:58px;height:48px}
+  .stage-on .bottom{left:auto;right:calc(var(--safe-r) + 8px);top:0;width:min(48vw,380px);display:flex;align-items:flex-end;padding-bottom:calc(8px + var(--safe-b))}
+  .stage-on .bottom-in{width:100%}
+  .stage-on .dock{grid-template-columns:auto minmax(0,1fr)}
+  .stage-on .dock-ctrl{grid-column:1/-1}
+  .stage-on .ctl,.stage-on .ctl.end{flex:1;width:auto}
+  .stage-on .stage-tags{right:calc(min(48vw,380px) + 64px)}
+  .stage-on .corner.tr,.stage-on .corner.br{right:calc(min(48vw,380px) + 24px)}
+  .stage-on .corner.bl,.stage-on .corner.br{bottom:14px}
+}
 </style>
 </head>
 <body>
@@ -527,23 +785,34 @@ button.tag:hover{background:#0B0F0DF0}
   <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.500h6L10 21l8.500-11H12.500z"/></symbol>
   <symbol id="i-server" viewBox="0 0 24 24"><rect x="3.500" y="4" width="17" height="7" rx="2"/><rect x="3.500" y="13" width="17" height="7" rx="2"/><path d="M7.500 7.500h.01M7.500 16.500h.01"/></symbol>
   <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="10" y="10" width="4" height="4" rx=".5"/><path d="M9.500 3v3M14.500 3v3M9.500 18v3M14.500 18v3M3 9.500h3M3 14.500h3M18 9.500h3M18 14.500h3"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8.500h16M4 15.500h10"/></symbol>
+  <symbol id="i-compose" viewBox="0 0 24 24"><path d="M12 4.500H6.500a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V12"/><path d="m9.500 14.500.6-3 8-8a1.700 1.700 0 0 1 2.400 2.400l-8 8z"/></symbol>
+  <symbol id="i-flip" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.300-3.800L4 9M4 4.500V9h4.500M4 13a8 8 0 0 0 14.300 3.800L20 15M20 19.500V15h-4.500"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.500" y="4.500" width="17" height="15" rx="2.500"/><circle cx="8.500" cy="9.500" r="1.500"/><path d="m4 17 5-4.500 3.500 3 3-2.500 4.500 4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.500 5 6v5.500c0 4.200 2.900 7.500 7 9 4.100-1.500 7-4.800 7-9V6z"/><path d="m9 12 2.200 2.200 4-4.200"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.500"/><path d="M3.500 12h17M12 3.500c2.400 2.300 3.600 5.100 3.600 8.500s-1.200 6.200-3.600 8.500c-2.400-2.300-3.600-5.100-3.600-8.500S9.600 5.800 12 3.500z"/></symbol>
+  <symbol id="i-temp" viewBox="0 0 24 24"><path d="M6 5h12a2 2 0 0 1 2 2v8.500a2 2 0 0 1-2 2h-7.500L6 21v-3.500a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" stroke-dasharray="3 2.600"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.500" width="14" height="10" rx="2.500"/><path d="M8 10.500V8a4 4 0 0 1 8 0v2.500"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M4 9.500a12 12 0 0 1 4.500-2.800M12 5.500a12 12 0 0 1 8 4M7 13a7.500 7.500 0 0 1 3-1.700M14.500 11.700c.9.300 1.800.7 2.500 1.300M12 17.500h.01M4 4l16 16"/></symbol>
+  <symbol id="i-resume" viewBox="0 0 24 24"><path d="M8 5.500v13l11-6.500z"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 10.500v3"/></symbol>
 </defs></svg>
 
 <div class="app" id="app">
-  <aside class="nav" aria-label="任务">
+  <aside class="nav" aria-label="对话">
     <div class="nav-top">
       <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="a" d="M4 10.500V9M8 10.500V6M12 10.500V3.500M16 10.500V7.500M20 10.500V9.500"/><path class="b" d="M4 13.500V15M8 13.500V16.500M12 13.500V16M16 13.500V20.500M20 13.500V17"/></svg>MiniCPM</div>
-      <button class="icon-btn only-wide" data-action="toggle-nav" aria-label="收起任务栏" title="收起任务栏"><svg class="i"><use href="#i-panel-l"/></svg></button>
+      <button class="icon-btn only-wide" data-action="toggle-nav" aria-label="收起侧栏" title="收起侧栏"><svg class="i"><use href="#i-panel-l"/></svg></button>
     </div>
-    <button class="nav-new" data-action="new-task"><svg class="i"><use href="#i-plus"/></svg>新建任务<kbd data-mod="N"></kbd></button>
-    <label class="nav-search"><svg class="i"><use href="#i-search"/></svg><span class="sr">搜索任务</span><input id="search" type="search" placeholder="搜索任务" autocomplete="off"><kbd data-mod="K"></kbd></label>
-    <nav class="nav-list" id="taskList" aria-label="任务列表"></nav>
+    <button class="nav-new" data-action="new-task"><svg class="i"><use href="#i-plus"/></svg><span id="navNewText">新对话</span><kbd data-mod="N"></kbd></button>
+    <label class="nav-search"><svg class="i"><use href="#i-search"/></svg><span class="sr">搜索对话</span><input id="search" type="search" placeholder="搜索对话" autocomplete="off"><kbd data-mod="K"></kbd></label>
+    <nav class="nav-list" id="taskList" aria-label="对话列表"></nav>
     <div class="nav-foot">
       <button class="engine" id="engineBtn" data-action="resources" aria-haspopup="dialog" aria-expanded="false"></button>
       <button class="icon-btn" data-action="open-settings" data-tab="general" aria-label="设置" title="设置"><svg class="i"><use href="#i-gear"/></svg></button>
     </div>
-    <div class="nav-resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="调整任务栏宽度" aria-valuemin="208" aria-valuemax="420" aria-valuenow="264" tabindex="0"></div>
+    <div class="nav-resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="调整侧栏宽度" aria-valuemin="208" aria-valuemax="420" aria-valuenow="264" tabindex="0"></div>
   </aside>
 
   <main class="work">
@@ -559,6 +828,7 @@ button.tag:hover{background:#0B0F0DF0}
       <div class="bottom" id="bottom"><div class="bottom-in">
         <div class="banner" id="banner" hidden></div>
         <form class="composer" id="composer" aria-label="输入">
+          <div class="modes" id="modes" hidden></div>
           <div class="chips" id="chips" hidden></div>
           <div id="textBox">
             <label class="sr" for="prompt">消息</label>
@@ -571,8 +841,8 @@ button.tag:hover{background:#0B0F0DF0}
             <button type="button" class="toggle" id="voiceReply" data-action="toggle-voice-reply" aria-pressed="false" title="让回答同时朗读出来"><svg class="i"><use href="#i-speaker"/></svg><span>语音回复</span></button>
             <button type="button" class="toggle" id="thinking" data-action="toggle-thinking" aria-pressed="false" title="先思考再回答，适合复杂问题"><svg class="i"><use href="#i-bulb"/></svg><span>深度思考</span></button>
             <span class="c-gap"></span>
-            <button type="button" class="model-btn" id="modelBtn" data-action="model-menu" aria-haspopup="menu" aria-expanded="false" title="切换这个任务使用的模型"></button>
-            <button type="button" class="live-btn" id="liveBtn" data-action="live-menu" aria-haspopup="menu" aria-expanded="false" title="边看边听边说的实时会话"><svg class="i"><use href="#i-duplex"/></svg><span>实时</span></button>
+            <button type="button" class="model-btn" id="modelBtn" data-action="model-menu" aria-haspopup="menu" aria-expanded="false" title="切换这个对话使用的模型"></button>
+            <button type="button" class="live-btn" id="liveBtn" data-action="live-menu" aria-haspopup="menu" aria-expanded="false" aria-label="实时" title="边看边听边说的实时会话"><svg class="i"><use href="#i-duplex"/></svg><span>实时</span></button>
             <button type="submit" class="send-btn" id="sendBtn" aria-label="发送" hidden><svg class="i"><use href="#i-up"/></svg></button>
           </div>
           <input type="file" id="file" multiple hidden accept="image/*,audio/*,video/*,.txt,.md,.pdf,.pptx,.docx">
@@ -583,10 +853,13 @@ button.tag:hover{background:#0B0F0DF0}
     </div>
   </main>
 
-  <aside class="inspector" id="inspector" aria-label="任务面板" hidden></aside>
+  <aside class="inspector" id="inspector" aria-label="对话详情" hidden></aside>
   <section class="settings" id="settings" aria-label="设置" hidden></section>
   <div class="scrim" data-action="close-drawers"></div>
 </div>
+<section class="gate" id="onboard" aria-label="开始使用" hidden></section>
+<section class="gate lock" id="lock" aria-label="应用已锁定" hidden></section>
+<div class="sheet-scrim" id="sheetScrim" hidden></div>
 <div class="menu" id="menu" hidden></div>
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="sr" id="announce" aria-live="polite"></div>
@@ -601,6 +874,9 @@ const clock = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math
 const uid = (() => { let n = 0; return p => `${p}${++n}`; })();
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
 const MOD = IS_MAC ? '⌘' : 'Ctrl+';
+// One query decides the form everywhere; the CSS block "Compact form" mirrors it.
+const COMPACT_QUERY = matchMedia('(max-width:820px),(max-height:480px) and (pointer:coarse)');
+const isCompact = () => COMPACT_QUERY.matches;
 const store = {
   get(k, d) { try { return localStorage.getItem('minicpm.' + k) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem('minicpm.' + k, v); } catch {} },
@@ -610,26 +886,26 @@ const darkScheme = matchMedia('(prefers-color-scheme: dark)');
 
 /* ================= Sample data ================= */
 const SCENES = {
-  'Work Buddy': { hint: '材料分析、屏幕协作、工作整理', starters: [
-    { icon: 'file', title: '分析一份材料', sub: '拖入 PDF、PPT 或图片', prompt: '帮我梳理这份材料的主要内容' },
-    { icon: 'screen', title: '一起看屏幕', sub: '边操作边讨论当前窗口', live: 'screen' },
-    { icon: 'clock', title: '安排今天的工作', sub: '按截止时间和依赖排序', prompt: '帮我安排今天的工作' } ] },
-  'Life Helper': { hint: '生活交流、物品观察', starters: [
+  life: { name: '生活助手', source: '内置', hint: '生活交流、物品观察', starters: [
     { icon: 'camera', title: '看看这个东西', sub: '用摄像头边看边聊', live: 'camera' },
     { icon: 'duplex', title: '随便聊聊', sub: '不用打字，直接开口', live: 'voice' },
     { icon: 'file', title: '读一张单据', sub: '拍照或上传图片', prompt: '帮我看看这张单据上有什么要注意的' } ] },
-  'Game Helper': { hint: '围绕游戏画面提供辅助', starters: [
+  work: { name: '工作助手', source: '内置', hint: '材料分析、屏幕协作、工作整理', starters: [
+    { icon: 'file', title: '分析一份材料', sub: '拖入 PDF、PPT 或图片', prompt: '帮我梳理这份材料的主要内容' },
+    { icon: 'screen', title: '一起看屏幕', sub: '边操作边讨论当前窗口', live: 'screen' },
+    { icon: 'clock', title: '安排今天的工作', sub: '按截止时间和依赖排序', prompt: '帮我安排今天的工作' } ] },
+  game: { name: '游戏助手', source: '内置', hint: '围绕游戏画面提供辅助', starters: [
     { icon: 'screen', title: '陪我打一局', sub: '看着画面实时提醒', live: 'screen' },
     { icon: 'file', title: '分析一张截图', sub: '看阵容、地图或配装', prompt: '帮我分析这张游戏截图' },
     { icon: 'duplex', title: '语音复盘', sub: '说说刚才那局', live: 'voice' } ] },
-  'Community Manager': { hint: '社区消息整理、定时汇总', starters: [
+  community: { name: '社区助手', source: '内置', hint: '社区消息整理、定时汇总', starters: [
     { icon: 'clock', title: '设置每日汇总', sub: '定时整理需要回复的消息', prompt: '每天早上帮我汇总社区里需要回复的消息' },
     { icon: 'file', title: '整理一批消息', sub: '粘贴或上传聊天记录', prompt: '帮我整理这批社区消息' },
     { icon: 'duplex', title: '口述公告', sub: '说出要点，由它写成稿', live: 'voice' } ] },
 };
 const CAPS = { image: '看图', video: '看视频', audio: '听语音', speech: '说话', live: '实时对话' };
 const MODELS = {
-  'minicpm-o-4.5': { name: 'MiniCPM-o 4.5', short: 'o 4.5', kind: '全模态', caps: ['image', 'video', 'audio', 'speech', 'live'], mem: { weights: 4.9, media: 1.1 } },
+  'minicpm-o-4.5': { name: 'MiniCPM-o 4.5', short: 'o 4.5', kind: '全能', caps: ['image', 'video', 'audio', 'speech', 'live'], mem: { weights: 4.9, media: 1.1 } },
   'minicpm-v-4.6': { name: 'MiniCPM-V 4.6', short: 'V 4.6', kind: '视觉', caps: ['image', 'video'], mem: { weights: 3.2, media: .5 } },
   'minicpm-v-4.5': { name: 'MiniCPM-V 4.5', short: 'V 4.5', kind: '视觉', caps: ['image', 'video'], mem: { weights: 4.6, media: .5 } },
 };
@@ -642,17 +918,28 @@ const PROACTIVE = {
   low: { label: '克制', cooldown: 45, sub: '两次提醒至少隔 45 秒' },
   high: { label: '积极', cooldown: 12, sub: '两次提醒至少隔 12 秒' },
 };
-const SCENE_PROACTIVE = { 'Work Buddy': 'low', 'Life Helper': 'low', 'Game Helper': 'high', 'Community Manager': 'off' };
+const SCENE_PROACTIVE = { life: 'low', work: 'low', game: 'high', community: 'off' };
+const sceneName = id => SCENES[id].name;
+// Interruptions the app did not choose. Capture stops at once and only ever
+// comes back after one tap, so nothing starts listening while nobody is looking.
+const HOLDS = {
+  call: { title: '来电中，实时已暂停', sub: '麦克风交给了电话，它现在听不到也看不到。', wait: 6, after: '通话结束了，要继续吗？', gap: '来电' },
+  background: { title: '离开时已暂停', sub: '实时会话不在后台运行，它现在听不到也看不到。', after: '回来了，要继续吗？', gap: '离开了应用' },
+  route: { title: '耳机断开了，已暂停', sub: '回答不会突然外放，确认后再继续。', resume: '外放继续', gap: '耳机断开' },
+  heat: { title: '设备太热，已暂停', sub: '等它降温后再继续，通常要几分钟。', wait: 8, after: '已经降温了，要继续吗？', gap: '设备过热' },
+};
+const ROUTES = { speaker: '扬声器', earpiece: '听筒', buds: 'AirPods Pro' };
+const FIRST_MODELS = [[null, '全能', '能听、能说、能看，可以实时对话'], ['minicpm-v-4.6', '轻量', '看图、读文档，用文字回答']];
 const REPLY_WINDOW = 4;                    // seconds after you stop talking that count as a reply
 const SOURCES = {
   voice: { label: '语音', icon: 'duplex', sub: '只用麦克风，随时打断' },
   camera: { label: '摄像头', icon: 'camera', sub: '让它看见你面前的东西' },
   screen: { label: '共享屏幕', icon: 'screen', sub: '选择一个窗口或整个屏幕' },
 };
-const ARCH_ANSWER = `<p>架构按 <strong>Application、Harness、Resource</strong> 三层组织，任务把会话、能力和产物收在一起。</p>
+const ARCH_ANSWER = `<p>架构按 <strong>Application、Harness、Resource</strong> 三层组织，对话把会话、能力和产物收在一起。</p>
 <table><thead><tr><th>层次</th><th>模块</th><th>前端位置</th></tr></thead><tbody>
-<tr><td>Application</td><td>Life Helper · Game Helper<br>Work Buddy · Community Manager</td><td>新建任务时选择场景</td></tr>
-<tr><td>Harness</td><td>Agents：4 个执行角色<br>Skills：核心、社区、用户</td><td>任务面板与设置</td></tr>
+<tr><td>Application</td><td>生活助手 · 游戏助手<br>工作助手 · 社区助手</td><td>新建对话时选择场景</td></tr>
+<tr><td>Harness</td><td>Agents：4 个执行角色<br>Skills：核心、社区、用户</td><td>对话详情与设置</td></tr>
 <tr><td>Resource</td><td>推理、媒体、在线服务<br>电脑操作、调度、消息通道</td><td>输入区控件与资源服务</td></tr>
 </tbody></table>
 <p>开启实时会话后，输入框变成控制条，画面进入左侧，对话留在右侧继续滚动。</p>`;
@@ -668,39 +955,94 @@ const PAST_CAMERA_TURNS = [
   { who: 'user', text: '除垢液用柠檬酸可以吗？', start: 11, end: 13 },
   { who: 'model', text: '可以，按说明书比例稀释，做完再用清水循环两次。', start: 14, end: 19 },
 ];
+const REPORT_ANSWER = `<p>整体正常，有两项值得留意。</p>
+<table><thead><tr><th>项目</th><th>结果</th><th>说明</th></tr></thead><tbody>
+<tr><td>血压</td><td>118/76</td><td>在正常范围内</td></tr>
+<tr><td>总胆固醇</td><td>5.6</td><td>略高于参考上限 5.2</td></tr>
+<tr><td>空腹血糖</td><td>6.2</td><td>略高于参考上限 6.1</td></tr>
+</tbody></table>
+<p>这两项都只是轻微偏高，可以先调整饮食，三个月后复查。具体判断以医生意见为准。</p>`;
+const REPOT_ANSWER = `<p>春秋两季最合适。换盆分四步：</p>
+<h3>准备</h3>
+<ul><li>新盆比旧盆大一圈，底部要有<strong>排水孔</strong></li><li>疏松的营养土，加一把珍珠岩</li></ul>
+<h3>操作</h3>
+<ol><li>换盆前两天停止浇水，土干了根更容易脱出</li><li>轻敲盆壁，整株取出，剪掉发黑的根</li><li>盆底铺一层陶粒，放入植株，填土后轻压</li><li>浇透一次，放在散射光处缓一周</li></ol>
+<blockquote>叶子发黄是换盆后的常见反应，一般两周内恢复。</blockquote>
+<p>想了解更多可以看<a href="#" data-action="proto-note" data-msg="原型中不打开链接">绿萝养护说明</a>。</p>`;
+const SCRIPT_ANSWER = `<p>用下面这段脚本，按拍摄日期给当前文件夹里的 <code>.jpg</code> 重命名。先运行一次预览，确认后再去掉 <code>echo</code>。</p>
+<div class="code"><div class="code-head"><span>bash</span><button data-action="copy-code">复制</button></div><pre><code>#!/usr/bin/env bash
+for f in *.jpg; do
+  d=$(exiftool -s3 -d '%Y-%m-%d_%H%M%S' -DateTimeOriginal "$f")
+  [ -n "$d" ] &amp;&amp; echo mv -n "$f" "photo_$d.jpg"
+done</code></pre></div>
+<p>没有拍摄日期的照片会被跳过，原文件名保持不变。</p>`;
+const TRIP_ANSWER = `<p>七天的行程可以这样排，每天不超过两个主要景点。</p>
+<table><thead><tr><th>日期</th><th>上午</th><th>下午</th><th>晚上</th><th>交通</th><th>预算</th></tr></thead><tbody>
+<tr><td>第 1 天</td><td>抵达、入住</td><td>老城散步</td><td>夜市</td><td>机场快线</td><td>320 元</td></tr>
+<tr><td>第 2 天</td><td>博物馆</td><td>湖边骑行</td><td>民宿休息</td><td>公交</td><td>180 元</td></tr>
+<tr><td>第 3 天</td><td>古镇</td><td>茶园</td><td>返回市区</td><td>包车</td><td>460 元</td></tr>
+</tbody></table>
+<p>第 4 天开始往南走，先到海边住两晚，再从那边的机场`;
 const tasks = [
-  { id: 'architecture', title: '梳理 MiniCPM 产品架构', scene: 'Work Buddy', group: '今天', meta: '刚刚',
+  { id: 'report', title: '看懂这份体检报告', scene: 'life', group: '今天', meta: '刚刚',
+    items: [
+      { type: 'user', text: '帮我看看这份体检报告，有什么要注意的？', atts: [{ kind: 'image', name: '体检报告.jpg', sub: '2.4 MB' }] },
+      { type: 'ai', html: REPORT_ANSWER, stat: '46 tok/s · 2.1 s',
+        steps: [['Core Agent', '识别为报告解读'], ['Task Agent', '读取 体检报告.jpg 第 1 页'], ['Task Agent', '对照参考范围']] },
+    ],
+    ctx: { agents: [['Core Agent', '主会话'], ['Task Agent', '已完成']], skills: ['图片理解'], sources: ['体检报告.jpg'], outputs: [] } },
+  { id: 'screen', title: '一起看当前工作窗口', scene: 'work', group: '今天', meta: '12:04',
+    items: [{ type: 'live', source: 'screen', duration: 25, turns: PAST_SCREEN_TURNS, ended: true, open: true }],
+    ctx: { agents: [['Core Agent', '主会话']], skills: ['屏幕理解'], sources: [], outputs: [] } },
+  { id: 'camera', title: '看看摄像头里的物品', scene: 'life', group: '今天', meta: '09:31',
+    items: [{ type: 'live', source: 'camera', duration: 21, turns: PAST_CAMERA_TURNS, ended: true, open: true }],
+    ctx: { agents: [['Core Agent', '主会话']], skills: ['物品识别'], sources: [], outputs: [] } },
+  { id: 'invoice', title: '核对这张发票', scene: 'life', model: 'minicpm-v-4.6', group: '今天', meta: '08:52',
+    items: [
+      { type: 'user', text: '这张发票的金额和税额对得上吗？', atts: [{ kind: 'image', name: '发票.jpg', sub: '1.2 MB' }] },
+      { type: 'ai', text: '对得上。价税合计 1,130.00 元，其中金额 1,000.00 元，税额 130.00 元，税率 13%。', stat: '52 tok/s · 0.8 s' },
+    ],
+    ctx: { agents: [['Core Agent', '主会话']], skills: ['图片理解'], sources: ['发票.jpg'], outputs: [] } },
+  { id: 'camping', title: '这周末适合露营吗', scene: 'life', group: '今天', meta: '08:10',
+    items: [
+      { type: 'user', text: '这周末北京适合去露营吗？' },
+      { type: 'ask', title: '要联网查一下吗？', body: '这个问题需要最新的天气。只发送下面这句话，不带对话内容和文件。', query: '北京 周六 周日 天气',
+        reply: '周六晴，最低 9 度；周日下午有小雨。适合周六出发、周日上午返回，记得带一件厚外套。',
+        fallback: '不联网的话我看不到最新天气。十一月的北京夜间接近 5 度，露营要准备保暖的睡袋，出发前再看一眼天气预报。' },
+    ],
+    ctx: { agents: [['Core Agent', '等待确认']], skills: [], sources: [], outputs: [] } },
+  { id: 'architecture', title: '梳理 MiniCPM 产品架构', scene: 'work', group: '昨天', meta: '周三',
     items: [
       { type: 'user', text: '梳理 MiniCPM 的模块关系，以及它们在前端中的位置。', atts: [{ kind: 'file', name: '图.pptx', sub: '2 页' }] },
       { type: 'ai', html: ARCH_ANSWER, stat: '41 tok/s · 1.8 s',
         steps: [['Core Agent', '识别为材料分析'], ['Task Agent', '读取 图.pptx 第 1–2 页'], ['Task Agent', '生成 架构对照表.md']] },
     ],
     ctx: { agents: [['Core Agent', '主会话'], ['Task Agent', '已完成']], skills: ['文档解析', '表格整理'], sources: ['图.pptx'], outputs: ['架构对照表.md'] } },
-  { id: 'screen', title: '一起看当前工作窗口', scene: 'Work Buddy', group: '今天', meta: '12:04',
-    items: [{ type: 'live', source: 'screen', duration: 25, turns: PAST_SCREEN_TURNS, ended: true, open: true }],
-    ctx: { agents: [['Core Agent', '主会话']], skills: ['屏幕理解'], sources: [], outputs: [] } },
-  { id: 'camera', title: '看看摄像头里的物品', scene: 'Life Helper', group: '今天', meta: '09:31',
-    items: [{ type: 'live', source: 'camera', duration: 21, turns: PAST_CAMERA_TURNS, ended: true, open: true }],
-    ctx: { agents: [['Core Agent', '主会话']], skills: ['物品识别'], sources: [], outputs: [] } },
-  { id: 'invoice', title: '核对这张发票', scene: 'Life Helper', model: 'minicpm-v-4.6', group: '今天', meta: '08:52',
-    items: [
-      { type: 'user', text: '这张发票的金额和税额对得上吗？', atts: [{ kind: 'image', name: '发票.jpg', sub: '1.2 MB' }] },
-      { type: 'ai', text: '对得上。价税合计 1,130.00 元，其中金额 1,000.00 元，税额 130.00 元，税率 13%。', stat: '52 tok/s · 0.8 s' },
-    ],
-    ctx: { agents: [['Core Agent', '主会话']], skills: ['图片理解'], sources: ['发票.jpg'], outputs: [] } },
-  { id: 'notes', title: '整理本周的工作安排', scene: 'Work Buddy', group: '昨天', meta: '周三',
+  { id: 'notes', title: '整理本周的工作安排', scene: 'work', group: '昨天', meta: '周三',
     items: [
       { type: 'user', text: '帮我整理本周工作安排。' },
       { type: 'ai', text: '先按截止时间和依赖关系排了一版：周四前收尾的两件事放在最前，等别人输入的事排在周五。你看优先级要不要调整？', stat: '38 tok/s · 0.9 s' },
     ],
     ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: [] } },
-  { id: 'community', title: '社区消息每日汇总', scene: 'Community Manager', group: '昨天', meta: '定时', scheduled: true,
+  { id: 'community', title: '社区消息每日汇总', scene: 'community', group: '昨天', meta: '定时', scheduled: true,
     items: [
       { type: 'user', text: '每天早上帮我汇总社区里需要回复的消息。' },
-      { type: 'ai', text: '可以。这个任务由 Schedule Task Agent 按时执行，消息从 Gateway 接入。', stat: '36 tok/s · 0.7 s' },
+      { type: 'ai', text: '可以。这个对话由 Schedule Task Agent 按时执行，消息从 Gateway 接入。', stat: '36 tok/s · 0.7 s' },
       { type: 'note', title: '定时汇总还没有开始运行', body: 'Scheduler 和 Gateway 配置好之后，这里会按天出现汇总结果。', action: ['配置资源服务', 'open-settings', 'resources'] },
     ],
     ctx: { agents: [['Core Agent', '主会话'], ['Schedule Task Agent', '等待配置']], skills: ['社区消息汇总'], sources: [], outputs: [] } },
+  { id: 'repot', title: '给绿萝换盆', scene: 'life', group: '昨天', meta: '周三',
+    items: [{ type: 'user', text: '绿萝怎么换盆？' }, { type: 'ai', html: REPOT_ANSWER, stat: '44 tok/s · 1.6 s' }],
+    ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: [] } },
+  { id: 'script', title: '批量重命名照片', scene: 'work', group: '昨天', meta: '周二',
+    items: [{ type: 'user', text: '帮我写个脚本，把照片按拍摄日期重命名。' },
+      { type: 'ai', html: SCRIPT_ANSWER, stat: '40 tok/s · 2.4 s', artifact: { name: 'rename_photos.sh', sub: '脚本 · 1 KB' } }],
+    ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: ['rename_photos.sh'] } },
+  { id: 'trip', title: '七天旅行安排', scene: 'life', group: '昨天', meta: '周二',
+    items: [{ type: 'user', text: '帮我排一个七天的旅行安排，列成表。' },
+      { type: 'ai', html: TRIP_ANSWER, cut: 'length', stat: '38 tok/s · 6.2 s' },
+      { type: 'note', tone: 'context', title: '这个对话快满了', body: '再聊下去，最早的内容会被忘记。可以带上摘要开一个新对话。', action: ['带上摘要新开', 'carry-new'] }],
+    ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: [] } },
 ];
 const REPLIES = [
   '好的。我先把要点列出来：目标、已有材料、还缺什么。你确认方向之后，我再展开每一部分。',
@@ -737,21 +1079,37 @@ const LIVE_SCRIPT = {
     { at: 39, who: 'model', dur: 3.2, proactive: true, text: '结尾可以回到开头那个数字，首尾呼应。' },
   ],
 };
+// Everyday settings first. Parameters and architecture pages sit behind one quiet entry.
 const SETTINGS_NAV = [
-  ['工作台', [['general', '通用', 'gear'], ['voice', '声音与人设', 'speaker'], ['live', '实时会话', 'duplex']]],
-  ['能力与资源', [['models', '模型与运行位置', 'cpu'], ['applications', '应用场景', 'grid'], ['agents', 'Agents', 'agent'], ['skills', 'Skills', 'bolt'], ['resources', '资源服务', 'server']]],
+  ['常用', [['general', '通用', 'gear'], ['voice', '声音与人设', 'speaker'], ['live', '实时会话', 'duplex'], ['models', '模型', 'cpu'], ['privacy', '隐私与数据', 'shield'], ['applications', '应用场景', 'grid']]],
+  ['', [['advanced', '高级', 'more']]],
 ];
+// Pages reached from another settings page rather than from the list.
+const DEVELOPER_PAGES = [['agents', 'Agents', '执行角色和它们的状态'], ['skills', 'Skills', '已安装的技能分组'], ['resources', '资源服务', '媒体、工具与外部通道']];
+const PRIVACY_PAGES = [['memories', '已记住的内容'], ['network', '联网记录']];
+const parentOf = tab => (DEVELOPER_PAGES.some(([id]) => id === tab) ? 'advanced' : PRIVACY_PAGES.some(([id]) => id === tab) ? 'privacy' : null);
+// Values are placeholders; the keys are the engine's real request fields.
+const PRESETS = {
+  saver: { label: '省电', sub: '回答更短，更省电', params: { max_tokens: 512, temperature: .7, top_p: .9, top_k: 40, repeat_penalty: 1.05, n_ctx: 2048, n_gpu_layers: 99 } },
+  balanced: { label: '均衡', sub: '默认，适合大多数情况', params: { max_tokens: 1024, temperature: .7, top_p: .9, top_k: 40, repeat_penalty: 1.05, n_ctx: 4096, n_gpu_layers: 99 } },
+  detail: { label: '细致', sub: '回答更完整，响应更慢', params: { max_tokens: 2048, temperature: .7, top_p: .9, top_k: 40, repeat_penalty: 1.05, n_ctx: 8192, n_gpu_layers: 99 } },
+};
 
 /* ================= State ================= */
 const state = {
-  current: 'architecture',
-  draftScene: 'Work Buddy',
+  current: 'report',
   theme: store.get('theme', 'system'),
   sendKey: store.get('sendKey', 'enter'),
   settingsTab: null,
   inspector: false,
   engine: 'ready',               // ready | offline
   address: '127.0.0.1:9060',
+  onboard: null,                 // welcome | model | download
+  obModel: OMNI,
+  locked: false,
+  cover: false,
+  dl: null,                      // { id, pct, status: running | paused | wifi | failed | verifying }
+  netLog: [],
   defaultModel: OMNI,
   loaded: OMNI,                  // what the on-device engine holds in memory
   loading: null,
@@ -760,7 +1118,23 @@ const state = {
   remote: { url: store.get('remoteUrl', ''), hasToken: false },   // the token itself is never kept here
   voice: 'qing',
   persona: '你是一个耐心、直接的助手。回答简短，先说结论。',
-  prefs: { proactiveDefault: 'scene', hd: false, aec: true, listenFirst: false },
+  prefs: { proactiveDefault: 'scene', hd: false, aec: true, listenFirst: false, tech: false, keepHistory: true, keepTranscript: true, keepFrames: false, appLock: false, retention: 'never',
+    // General
+    lang: 'system', textSize: 'm', openTo: 'new', sounds: true, haptics: true, autostart: false, closeAction: 'tray', defaultScene: 'life',
+    // Voice
+    speed: '1', replyLang: 'ui', replyLength: 'normal', callName: '',
+    // Live
+    interrupt: 'mid', captions: true, captionSize: 'm', defaultSource: 'voice', cameraDefault: 'back', idleEnd: '10',
+    // Model
+    idleRelease: '15', lowPower: true, thermal: true, wifiOnly: true,
+    // Privacy
+    offlineMode: false, webSearch: 'ask', updates: true, analytics: false, crash: 'ask', tempDefault: false, memory: true,
+    muteNotify: true, blurFaces: false, autoLock: '1', hidePreview: true, noScreenshot: false, encrypt: true },
+  sceneOff: new Set(),
+  memories: ['你习惯用公制单位', '你对青霉素过敏', '回答尽量简短'],
+  preset: 'balanced',            // saver | balanced | detail | custom
+  params: { ...PRESETS.balanced.params },
+  placeOpen: false,
   lastRequest: null,             // last turn_based payload, see buildFollowUp()
   atts: [],
   voiceReply: false,
@@ -769,9 +1143,10 @@ const state = {
   reply: null,                   // { taskId, item, timer }
   live: null,
   permError: null,
-  proto: { perm: 'granted', weak: false, hw: 'discrete', tight: false },
+  proto: { perm: 'granted', weak: false, hw: 'discrete', tight: false, heat: 0, device: 'ok', storage: 'ok' },
 };
 const task = id => tasks.find(t => t.id === id);
+const activeScenes = t => Object.keys(SCENES).filter(id => !state.sceneOff.has(id) || id === t?.scene);
 const cur = () => task(state.current);
 const modelOf = t => MODELS[t.model ?? state.defaultModel];
 const can = cap => modelOf(cur()).caps.includes(cap);
@@ -783,6 +1158,7 @@ const liveHere = () => state.live && state.live.taskId === state.current;
 function applyTheme() {
   const t = state.theme === 'system' ? (darkScheme.matches ? 'dark' : 'light') : state.theme;
   document.documentElement.dataset.theme = t;
+  $('#themeColor').content = t === 'dark' ? '#141A18' : '#FAFBF8';
   readTrackColors();
 }
 darkScheme.addEventListener('change', applyTheme);
@@ -790,7 +1166,7 @@ darkScheme.addEventListener('change', applyTheme);
 /* ================= Navigation ================= */
 function renderNav() {
   const q = $('#search').value.trim().toLowerCase();
-  const list = tasks.filter(t => (t.title + ' ' + t.scene).toLowerCase().includes(q));
+  const list = tasks.filter(t => !t.temp && (t.title + ' ' + sceneName(t.scene)).toLowerCase().includes(q));
   let html = '', group = '';
   for (const t of list) {
     if (t.group !== group) { group = t.group; html += `<div class="nav-group">${group}</div>`; }
@@ -803,12 +1179,12 @@ function renderNav() {
     html += `<div class="task ${t.id === state.current ? 'current' : ''}">
       <button class="task-main" data-action="select-task" data-id="${t.id}" ${t.id === state.current ? 'aria-current="page"' : ''}>
         <span class="task-title"><b>${esc(t.title)}</b>${flag}</span>
-        <span class="task-meta">${esc(t.scene)} · ${live ? '实时中' : esc(t.meta)}</span>
+        <span class="task-meta">${esc(sceneName(t.scene))} · ${live ? (state.live.hold ? '已暂停' : '实时中') : esc(t.meta)}</span>
       </button>
       <button class="icon-btn task-more" data-action="task-menu" data-id="${t.id}" aria-label="${esc(t.title)} 的更多操作" aria-haspopup="menu">${icon('more')}</button>
     </div>`;
   }
-  $('#taskList').innerHTML = html || `<div class="nav-empty">没有找到“${esc(q)}”。试试场景名，比如 Work Buddy。</div>`;
+  $('#taskList').innerHTML = html || `<div class="nav-empty">没有找到“${esc(q)}”。试试场景名，比如生活助手。</div>`;
   renderEngine();
 }
 
@@ -823,7 +1199,8 @@ const HARDWARE = {
 const GB = v => (v < 10 ? v.toFixed(1) : Math.round(v).toString());
 const isRemote = () => state.backend === 'remote';
 const remoteHost = () => { try { return new URL(state.remote.url).host; } catch { return state.remote.url; } };
-const backendState = () => (isRemote() && !state.remote.url ? 'unset' : state.engine === 'offline' ? 'offline' : 'ready');
+const modelId = t => t.model ?? state.defaultModel;
+const backendState = () => (isRemote() && !state.remote.url ? 'unset' : state.engine === 'offline' ? 'offline' : !isRemote() && cur() && !state.installed.has(modelId(cur())) ? 'nomodel' : 'ready');
 const backendReady = () => backendState() === 'ready';
 const weakLink = () => isRemote() && state.proto.weak;
 const usage = { gpu: 0, cpu: 0, temp: 0, parts: null, ram: 0, rtt: 0, jitter: 0, loss: 0, ready: false };
@@ -869,7 +1246,8 @@ const footerModel = () => (isRemote() ? modelOf(cur()) : MODELS[state.loading ??
 function engineStatus() {
   const st = backendState();
   if (st === 'unset') return ['bad', '远程服务未配置'];
-  if (st === 'offline') return ['bad', isRemote() ? '连不上远程服务' : '引擎未连接'];
+  if (st === 'offline') return ['bad', isRemote() ? '连不上远程服务' : '模型未启动'];
+  if (st === 'nomodel') return ['warn', state.dl ? `下载中 ${Math.round(state.dl.pct)}%` : '模型未下载'];
   if (state.loading) return ['warn', '正在载入模型'];
   if (!isRemote() && !state.live && !state.reply && modelOf(cur()) !== MODELS[state.loaded]) return ['ok', `本机运行 · 发送时载入 ${modelOf(cur()).short}`];
   const activity = state.live ? '实时会话' : state.reply ? '生成中' : '空闲';
@@ -907,7 +1285,8 @@ function resourceDetail() {
   const stat = (k, v, cls = '') => `<div class="stat ${cls}"><span>${k}</span><span class="mono">${v}</span></div>`;
   const st = backendState(), perf = backendHealth();
   if (st === 'unset') return '<div class="hint">填好服务地址后，这里会显示连接质量。</div>';
-  if (st === 'offline') return `<div class="hint">${isRemote() ? `${esc(remoteHost())} 没有响应。` : '本地引擎没有响应。'}检查后重试。</div>`;
+  if (st === 'nomodel') return '<div class="hint">模型下载好之后，这里会显示系统负载。</div>';
+  if (st === 'offline') return `<div class="hint">${isRemote() ? `${esc(remoteHost())} 没有响应。` : '本机模型没有响应。'}检查后重试。</div>`;
   const head = perf ? `<div class="perf-head"><b>${perf.label}：${perf.word}</b><small>${perf.kind ? '主要受' : '当前最高的是'}${perf.cause}${perf.kind ? '影响' : ''}</small></div>` : '';
   if (isRemote()) {
     const L = state.live, video = L && L.source !== 'voice' && !L.videoOff;
@@ -915,32 +1294,43 @@ function resourceDetail() {
       ${stat('上行', L ? (video ? '1.4 Mbps' : '256 kbps') : '—')}${stat('下行', L ? '190 kbps' : '—')}
       <div class="hint">${perf?.kind ? '网络较差，实时画面会自动降帧。' : '声音、画面和文字会发送到这台服务器处理。'}</div>`;
   }
-  if (state.proto.hw === 'none') return '<div class="hint">浏览器无法直接读取显卡和内存。用桌面客户端打开，或让本地引擎上报后，这里会显示系统负载。</div>';
+  if (state.proto.hw === 'none') return '<div class="hint">浏览器无法直接读取显卡和内存。用桌面客户端打开后，这里会显示系统负载。</div>';
   const hw = HARDWARE[state.proto.hw], p = usage.parts, mem = memoryRows();
   return `${head}${stat('GPU', `${Math.round(usage.gpu)}%`, 'top')}${stat(esc(hw.gpu), `${Math.round(usage.temp)} °C`, 'sub')}
     ${stat(mem[0].name, mem[0].val, 'top')}
-    ${stat('模型权重', `${p.weights.toFixed(1)} GB`, 'sub')}${stat('音视频模块', `${p.media.toFixed(1)} GB`, 'sub')}${stat('上下文缓存', `${p.kv.toFixed(1)} GB`, 'sub')}${stat('其他程序', `${p.other.toFixed(1)} GB`, 'sub')}
+    ${state.prefs.tech ? `${stat('模型权重', `${p.weights.toFixed(1)} GB`, 'sub')}${stat('音视频模块', `${p.media.toFixed(1)} GB`, 'sub')}${stat('上下文缓存', `${p.kv.toFixed(1)} GB`, 'sub')}${stat('其他程序', `${p.other.toFixed(1)} GB`, 'sub')}` : ''}
     ${mem[1] ? stat(mem[1].name, mem[1].val, 'top') : ''}${stat('CPU', `${Math.round(usage.cpu)}%`, 'top')}
     ${perf?.kind ? `<div class="hint">${perf.kind === 'bad' ? '资源快用完了，实时会话可能中断' : '响应可能变慢'}。关掉其他占用显卡的程序，或在设置里关闭“高清细节”。</div>` : ''}`;
 }
 setInterval(() => { stepUsage(); paintUsage(); }, 1000);
 
 /* ================= Header ================= */
+const tempButton = t => `<button class="icon-btn" data-action="toggle-temp" aria-pressed="${!!t.temp}" aria-label="临时对话" title="临时对话：不保存记录，也不写入记忆">${icon('temp')}</button>`;
 function renderHead() {
   const t = cur();
+  if (isCompact()) {
+    const fresh = isBlank(t) && t.autoTitle, model = t.temp && fresh ? '临时对话' : modelOf(t).name, where = isRemote() ? '远程' : '本机';
+    $('#head').innerHTML = `
+      <button class="icon-btn" data-action="toggle-nav" aria-label="打开对话列表">${icon('menu')}</button>
+      <button class="head-title" data-action="title-sheet" aria-haspopup="dialog" aria-expanded="false"><span class="ht-main"><b>${esc(fresh ? model : t.title)}</b>${icon('down')}</span><small>${t.temp ? '不保存记录' : fresh ? `${where}处理` : `${esc(modelOf(t).short)} · ${where}`}</small></button>
+      ${fresh ? tempButton(t) : `<button class="icon-btn" data-action="new-task" aria-label="新对话">${icon('compose')}</button>`}`;
+    return;
+  }
   $('#head').innerHTML = `
-    <button class="icon-btn only-collapsed" data-action="toggle-nav" aria-label="展开任务栏">${icon('panel-l')}</button>
+    <button class="icon-btn only-collapsed" data-action="toggle-nav" aria-label="展开侧栏">${icon('panel-l')}</button>
     <button class="head-title" data-action="rename" title="重命名">${esc(t.title)}</button>
-    <button class="scene-chip" data-action="scene-menu" aria-haspopup="menu" title="切换应用场景">${esc(t.scene)}${icon('down', 'i')}</button>
+    <button class="scene-chip" data-action="scene-menu" aria-haspopup="menu" title="切换应用场景">${esc(sceneName(t.scene))}${icon('down', 'i')}</button>
+    ${t.temp && !isBlank(t) ? `<span class="temp-tag">${icon('temp')}临时对话，不保存记录</span>` : ''}
     <span class="head-gap"></span>
+    ${isBlank(t) && t.autoTitle ? tempButton(t) : ''}
     <button class="proto-chip" data-action="proto-menu" aria-haspopup="menu" title="切换原型状态">原型状态</button>
-    <button class="icon-btn" data-action="toggle-inspector" aria-pressed="${state.inspector}" aria-label="任务面板" title="任务面板 (${MOD}I)">${icon('panel-r')}</button>`;
+    <button class="icon-btn" data-action="toggle-inspector" aria-pressed="${state.inspector}" aria-label="对话详情" title="对话详情 (${MOD}I)">${icon('panel-r')}</button>`;
 }
 function startRename(id = state.current) {
   if (id !== state.current) selectTask(id);
   const t = cur(), btn = $('.head-title');
   const input = document.createElement('input');
-  input.className = 'head-rename'; input.value = t.title; input.setAttribute('aria-label', '任务名称');
+  input.className = 'head-rename'; input.value = t.title; input.setAttribute('aria-label', '对话名称');
   btn.replaceWith(input); input.select();
   let done = false;
   const finish = save => {
@@ -959,6 +1349,7 @@ function startRename(id = state.current) {
 /* ================= Thread ================= */
 const attHTML = (a, tail = '') => `<span class="att"><span class="thumb" ${a.url ? `style="background-image:url('${a.url}')"` : ''}>${a.url ? '' : icon(a.kind === 'audio' ? 'wave' : a.kind === 'frame' ? 'freeze' : 'file')}</span><span class="nm">${esc(a.name)}</span>${a.sub ? `<span class="sub">${esc(a.sub)}</span>` : ''}${tail}</span>`;
 function miniTimeline(turns, total) {
+  turns = turns.filter(t => !t.gap);
   const span = Math.max(total, ...turns.map(t => t.end ?? 0), 1);
   const rects = turns.map(t => {
     const x = (t.start / span) * 300, w = Math.max(2, ((t.end ?? t.start + 1) - t.start) / span * 300);
@@ -972,30 +1363,42 @@ function turnHTML(t) {
   const tags = (t.proactive ? '<span class="pill ok">主动提醒</span>' : '')
     + (canLower ? `<button class="turn-act" data-action="less-proactive" data-id="${t.id}">少提醒</button>` : '')
     + (t.cut === 'barge' ? '<span class="pill">被你打断</span>' : '')
-    + (t.cut === 'hush' ? '<span class="pill">已让它停下</span>' : '');
+    + (t.cut === 'hush' ? '<span class="pill">已让它停下</span>' : '')
+    + (t.cut === 'hold' ? '<span class="pill">说到一半暂停了</span>' : '');
   return `<div class="turn-who"><b>${who}</b>${tags}</div><p>${esc(t.shown ?? t.text)}</p>`;
 }
 function liveItemHTML(it) {
   const src = SOURCES[it.source];
-  const turns = `<div class="turns" id="turns-${it.id}">${it.turns.map(t => `<div class="turn ${t.who === 'user' ? 'user' : 'model'}" id="${t.id ?? ''}">${turnHTML(t)}</div>`).join('')}${it.endNote ? `<div class="live-end">${esc(it.endNote)}</div>` : ''}</div>`;
+  const turns = `<div class="turns" id="turns-${it.id}">${it.turns.map(t => (t.gap ? `<div class="turn-gap">${esc(t.text)}</div>` : `<div class="turn ${t.who === 'user' ? 'user' : 'model'}" id="${t.id ?? ''}">${turnHTML(t)}</div>`)).join('')}${it.endNote ? `<div class="live-end">${esc(it.endNote)}</div>` : ''}</div>`;
   if (!it.ended) return `<section class="live-block on"><div class="live-head"><span>实时会话 · ${src.label}</span></div>${turns}</section>`;
   return `<details class="live-block" ${it.open ? 'open' : ''}><summary class="live-head">${icon('chev', 'i chev')}<span class="lbl">实时会话 · ${src.label}</span><span class="mono" style="font-size:12.5px;color:var(--ink-3)">${clock(it.duration)}</span>${miniTimeline(it.turns, it.duration)}</summary>${turns}</details>`;
 }
 function aiHTML(it) {
   const content = it.html ?? `<p>${esc(it.text).replace(/\n/g, '<br>')}</p>`;
-  const steps = it.steps?.length === 1 ? `<div class="steps">${esc(it.steps[0].join(' '))}</div>` : it.steps ? `<details class="steps"><summary>${icon('chev')}${it.steps.length} 个步骤 · ${esc(it.steps.at(-1)[0])} 已完成</summary><ol>${it.steps.map(s => `<li><b>${esc(s[0])}</b> ${esc(s[1])}</li>`).join('')}</ol></details>` : '';
+  const tech = state.prefs.tech;
+  const steps = it.steps?.length === 1 ? `<div class="steps">${esc(tech ? it.steps[0].join(' ') : it.steps[0][1])}</div>` : it.steps ? `<details class="steps"><summary>${icon('chev')}${it.steps.length} 个步骤${tech ? ` · ${esc(it.steps.at(-1)[0])} 已完成` : ''}</summary><ol>${it.steps.map(s => `<li>${tech ? `<b>${esc(s[0])}</b> ` : ''}${esc(s[1])}</li>`).join('')}</ol></details>` : '';
   const think = it.thought ? `<details class="steps"><summary>${icon('chev')}思考了 ${it.thought} 秒</summary><ol><li>先确认用户要的是结论还是过程，再决定回答长度。</li></ol></details>` : '';
   const voice = it.voice ? `<div class="voice-strip"><button data-action="play-voice" aria-label="播放语音回复">${icon('play')}</button><span class="bars" aria-hidden="true">${[6, 11, 16, 9, 14, 7, 12, 17, 10, 6, 13, 8, 15, 9, 5].map(h => `<i style="height:${h}px"></i>`).join('')}</span><span class="mono" style="font-size:12px">00:${String(it.voice).padStart(2, '0')}</span></div>` : '';
   const live = state.reply?.item === it;
-  return `${steps}${think}${voice}<div class="content ${live ? 'caret' : ''}" id="${it.id}">${content}</div>
-    ${live ? '' : `<div class="msg-tools"><button class="icon-btn" data-action="copy" aria-label="复制" title="复制">${icon('copy')}</button><button class="icon-btn" data-action="regen" aria-label="重新生成" title="重新生成">${icon('retry')}</button><button class="icon-btn" data-action="read-aloud" aria-label="朗读" title="朗读">${icon('speaker')}</button>${it.stat ? `<span class="msg-stat mono">${esc(it.stat)}</span>` : ''}</div>`}`;
+  const art = it.artifact ? `<div class="artifact">${icon('file')}<div><b>${esc(it.artifact.name)}</b><small>${esc(it.artifact.sub)}</small></div><button class="btn" data-action="proto-note" data-msg="原型中不打开文件">打开</button></div>` : '';
+  const cut = it.cut === 'length' ? `<div class="cut">回答太长，到这里停了<button class="btn" data-action="continue-reply" data-id="${it.id}">接着写</button></div>` : '';
+  return `${steps}${think}${voice}<div class="content ${live ? 'caret' : ''}" id="${it.id}">${content}</div>${art}${cut}
+    ${live ? '' : `<div class="msg-tools"><button class="icon-btn" data-action="copy" aria-label="复制" title="复制">${icon('copy')}</button><button class="icon-btn" data-action="regen" aria-label="重新生成" title="重新生成">${icon('retry')}</button><button class="icon-btn" data-action="read-aloud" aria-label="朗读" title="朗读">${icon('speaker')}</button>${it.stat && tech ? `<span class="msg-stat mono">${esc(it.stat)}</span>` : ''}</div>`}`;
+}
+// The one place content may leave the device on a local setup, so it is asked for in the thread.
+function askHTML(it) {
+  if (it.state === 'allowed') return `<div class="net-note">${icon('globe')}联网查了“${esc(it.query)}”<button class="link" data-action="open-settings" data-tab="network">联网记录</button></div>`;
+  if (it.state === 'denied') return `<div class="net-note">${icon('offline')}没有联网</div>`;
+  return `<div class="ask"><div class="ask-head">${icon('globe')}${esc(it.title)}</div><p>${esc(it.body)}</p><span class="ask-q">${esc(it.query)}</span>
+    <div class="acts"><button class="btn primary" data-action="ask-allow" data-id="${it.id}">查一下</button><button class="btn" data-action="ask-deny" data-id="${it.id}">不用</button></div></div>`;
 }
 function itemHTML(it) {
   it.id ??= uid('it');
   if (it.type === 'user') return `<div class="msg-user">${it.atts?.length ? `<div class="attach-row">${it.atts.map(a => attHTML(a)).join('')}</div>` : ''}${it.text ? `<div class="bubble">${esc(it.text)}</div>` : ''}${it.failed ? `<div class="msg-fail">${icon('alert')}没有发出去<button data-action="retry-send" data-id="${it.id}">重试</button></div>` : ''}</div>`;
   if (it.type === 'ai') return `<article class="msg-ai">${aiHTML(it)}</article>`;
   if (it.type === 'live') return liveItemHTML(it);
-  if (it.type === 'note') return `<div class="note">${icon('clock')}<div class="grow"><strong>${esc(it.title)}</strong><p>${esc(it.body)}</p>${it.action ? `<div class="acts"><button class="btn" data-action="${it.action[1]}" data-tab="${it.action[2]}">${esc(it.action[0])}</button></div>` : ''}</div></div>`;
+  if (it.type === 'ask') return askHTML(it);
+  if (it.type === 'note') return `<div class="note">${icon(it.tone === 'context' ? 'alert' : 'clock')}<div class="grow"><strong>${esc(it.title)}</strong><p>${esc(it.body)}</p>${it.action ? `<div class="acts"><button class="btn" data-action="${it.action[1]}" data-tab="${it.action[2]}">${esc(it.action[0])}</button></div>` : ''}</div></div>`;
   return '';
 }
 function renderThread({ stick = false } = {}) {
@@ -1005,7 +1408,8 @@ function renderThread({ stick = false } = {}) {
   $('#body').classList.toggle('empty', blank);
   $('#starters').hidden = !blank;
   if (blank) {
-    const fit = SCENES[t.scene].starters.filter(s => !s.live || can('live'));
+    // Mobile browsers have no screen capture, so the compact form leaves those starters out.
+    const fit = SCENES[t.scene].starters.filter(s => (!s.live || can('live')) && !(s.live === 'screen' && isCompact()));
     const extra = [{ icon: 'file', title: '看一张图', sub: '上传图片，问它细节', prompt: '帮我看看这张图' }, { icon: 'file', title: '读一份文档', sub: '提取要点和数字', prompt: '帮我提取这份文档的要点' }];
     $('#starters').innerHTML = [...fit, ...extra].slice(0, 3).map(s => `<button class="starter" ${s.live ? `data-action="start-live" data-source="${s.live}"` : `data-action="use-prompt" data-prompt="${esc(s.prompt)}"`}>${icon(s.icon)}<b>${esc(s.title)}</b><small>${esc(s.sub)}</small></button>`).join('');
   }
@@ -1014,8 +1418,9 @@ function renderThread({ stick = false } = {}) {
 }
 function heroHTML() {
   const t = cur();
-  return `<div class="hero"><h1>想一起做点什么？</h1><p>${can('live') ? '打字、说话，或者直接给它看。' : '打字，或者把图片和文档给它看。'}</p>
-    <div class="scene-row" role="radiogroup" aria-label="应用场景">${Object.keys(SCENES).map(s => `<button class="scene-opt" role="radio" aria-checked="${s === t.scene}" data-action="set-scene" data-scene="${s}" title="${SCENES[s].hint}">${s}</button>`).join('')}</div></div>`;
+  return `<div class="hero">${MARK}<h1>${t.temp ? '这段对话不会留下' : '想一起做点什么？'}</h1><p>${t.temp ? '离开后不保存记录，也不写入记忆。' : can('live') ? '打字、说话，或者直接给它看。' : '打字，或者把图片和文档给它看。'}</p>
+    <p class="privacy">${icon('shield')}${isRemote() ? `内容会发送到 ${esc(remoteHost())} 处理` : '只在这台设备上处理，内容不会离开'}</p>
+    <div class="scene-row" role="radiogroup" aria-label="应用场景">${activeScenes(t).map(s => `<button class="scene-opt" role="radio" aria-checked="${s === t.scene}" data-action="set-scene" data-scene="${s}" title="${SCENES[s].hint}">${sceneName(s)}</button>`).join('')}</div></div>`;
 }
 const scroller = () => $('#scroll');
 const nearEnd = () => { const s = scroller(); return s.scrollHeight - s.scrollTop - s.clientHeight < 80; };
@@ -1059,10 +1464,15 @@ function renderBanner() {
       <button class="btn" data-action="open-settings" data-tab="models">去设置</button>`;
   } else if (backendState() === 'offline') {
     bad = true;
-    html = `${icon('alert')}<span class="txt"><b>连不上${isRemote() ? '远程服务' : '本地引擎'}</b> <span>它没有响应。你写的内容会留在这里。</span></span>
+    html = `${icon('alert')}<span class="txt"><b>连不上${isRemote() ? '远程服务' : '本机模型'}</b> <span>它没有响应。你写的内容会留在这里。</span></span>
       <button class="btn" data-action="reconnect">重试</button><button class="btn" data-action="open-settings" data-tab="models">检查设置</button>`;
+  } else if (backendState() === 'nomodel') {
+    const m = modelOf(cur()), d = state.dl?.id === modelId(cur()) ? state.dl : null;
+    html = d ? `${icon('download')}<span class="txt"><b>${esc(m.name)}</b> <span data-dl-text>${dlText(d)}</span></span>${dlActs(d)}`
+      : `${icon('alert')}<span class="txt"><b>这台设备上还没有 ${esc(m.name)}</b> <span>下载后才能用，你写的内容会留在这里。</span></span>
+      <button class="btn" data-action="download-model" data-id="${modelId(cur())}">下载</button><button class="btn" data-action="model-menu" aria-haspopup="menu">换模型</button>`;
   } else if (state.live && !liveHere()) {
-    html = `${icon('alert')}<span class="txt"><b>引擎正被实时会话占用</b> <span>一次只能运行一个会话，结束后就能在这里发送。</span></span>`;
+    html = `${icon('alert')}<span class="txt"><b>${state.live.hold ? '实时会话已暂停' : '正在实时会话中'}</b> <span>一次只能运行一个会话，结束后就能在这里发送。</span></span>`;
   }
   b.hidden = !html; b.className = `banner${bad ? ' bad' : ''}`; b.innerHTML = html;
 }
@@ -1074,10 +1484,11 @@ function syncComposer() {
   const engineTaken = !!state.live && !liveHere();
   const form = $('#composer');
   form.classList.toggle('has-input', has);
+  form.classList.toggle('temp', !!cur().temp);
   const send = $('#sendBtn');
   const unreadable = state.atts.some(a => !attOk(a));
   send.hidden = !(has || busy || !can('live')) || !!state.recording;
-  send.disabled = !busy && (engineTaken || !has || unreadable);
+  send.disabled = !busy && (engineTaken || !has || unreadable || backendState() === 'nomodel');
   send.innerHTML = icon(busy ? 'stop' : 'up');
   send.setAttribute('aria-label', busy ? '停止生成' : '发送');
   send.title = busy ? '停止生成 (Esc)' : state.sendKey === 'enter' ? '发送 (Enter)' : `发送 (${MOD}Enter)`;
@@ -1091,7 +1502,10 @@ function syncComposer() {
   btn.disabled = engineTaken;
   btn.innerHTML = `<span class="full">${esc(m.name)}</span><span class="short">${esc(m.short)}</span>${icon('down')}`;
   btn.setAttribute('aria-label', `模型：${m.name}，点击切换`);
-  $('#prompt').placeholder = can('audio') ? '写点什么，或把图片、音频、文件拖到这里' : '写点什么，或把图片、文件拖到这里';
+  $('#prompt').placeholder = isCompact() ? '问问 MiniCPM' : can('audio') ? '写点什么，或把图片、音频、文件拖到这里' : '写点什么，或把图片、文件拖到这里';
+  const modes = isCompact() ? [state.thinking && ['toggle-thinking', 'bulb', '深度思考'], state.voiceReply && can('speech') && ['toggle-voice-reply', 'speaker', '语音回复']].filter(Boolean) : [];
+  $('#modes').hidden = !modes.length;
+  $('#modes').innerHTML = modes.map(([action, ic, name]) => `<button type="button" class="mode" data-action="${action}" aria-label="关闭${name}">${icon(ic)}${name}${icon('close')}</button>`).join('');
   $('#file').accept = `image/*,${can('audio') ? 'audio/*,' : ''}video/*,.txt,.md,.pdf,.pptx,.docx`;
   $('#chips').hidden = !state.atts.length;
   $('#chips').innerHTML = state.atts.map(a => attHTML(a, `${attOk(a) ? '' : '<span class="sub">这个模型读不了</span>'}<button type="button" data-action="remove-att" data-id="${a.id}" aria-label="移除 ${esc(a.name)}">${icon('close')}</button>`).replace('class="att"', `class="att ${attOk(a) ? '' : 'bad'}"`)).join('');
@@ -1113,7 +1527,7 @@ function addFiles(files) {
 }
 function send() {
   if (state.reply?.taskId === state.current) return stopReply();
-  if (state.live && !liveHere()) return;
+  if ((state.live && !liveHere()) || backendState() === 'nomodel') return;
   const text = $('#prompt').value.trim();
   if (!text && !state.atts.length) return;
   const t = cur();
@@ -1134,7 +1548,7 @@ function send() {
  * such cut, so the transcript goes there, newest turns first to survive the cap. */
 const CARRY_CHARS = 3000;
 function buildFollowUp(t) {
-  const spoken = t.items.filter(i => i.type === 'live').flatMap(i => i.turns);
+  const spoken = t.items.filter(i => i.type === 'live').flatMap(i => i.turns).filter(x => !x.gap);
   const lines = [];
   let used = 0;
   for (const turn of spoken.toReversed()) {
@@ -1142,7 +1556,7 @@ function buildFollowUp(t) {
     if (used + line.length > CARRY_CHARS) break;
     used += line.length; lines.unshift(line);
   }
-  const system = state.persona + (lines.length ? `\n\n以下是本任务里实时会话的记录，回答时可以引用：\n${lines.join('\n')}` : '');
+  const system = state.persona + (lines.length ? `\n\n以下是本对话里实时会话的记录，回答时可以引用：\n${lines.join('\n')}` : '');
   const chat = t.items.filter(i => (i.type === 'user' || i.type === 'ai') && (i.text || i.html));
   const last = chat.at(-1);
   const history = chat.slice(-8, -1).map(i => ({ role: i.type === 'user' ? 'user' : 'assistant', text: i.text ?? '' }));
@@ -1241,6 +1655,7 @@ function startLive(source) {
   if (state.live) return;
   if (!backendReady() || !can('live')) return;
   if (!isRemote() && state.loaded !== (t.model ?? state.defaultModel)) return loadModel(t, () => startLive(source));
+  if (state.proto.perm === 'ask') return permPrimer(source);
   if (state.proto.perm === 'denied') {
     state.permError = { source, title: source === 'screen' ? '没有屏幕录制权限' : source === 'camera' ? '没有摄像头权限' : '没有麦克风权限' };
     renderBanner(); return;
@@ -1256,9 +1671,11 @@ function startLive(source) {
     clock: 0, script: 0, queue: LIVE_SCRIPT[source].map(e => ({ ...e })), active: [],
     samples: [], acc: 0, secAcc: 0, muted: false, videoOff: false, hush: false, kv: 1180,
     level: proactiveLevel(t), lastUser: -Infinity, lastProactive: -Infinity, held: 0,
+    hold: null, holdFor: 0, link: null, idle: null, route: 'speaker',
   };
   renderAll({ stick: true });
   say(`实时会话开始，${SOURCES[source].label}`);
+  if (isRemote() && isCompact()) showToast(`声音和画面会发送到 ${remoteHost()}`);
   startLoop();
 }
 function setLiveSource(source) {
@@ -1286,19 +1703,88 @@ function endLive({ note = null, toast = true } = {}) {
   say('实时会话已结束');
   if (toast) showToast('实时会话已结束', '重新开始', () => { selectTask(t.id); startLive(lastSource); });
 }
+function permPrimer(source) {
+  const where = isRemote() ? `内容会发送到 ${esc(remoteHost())} 处理。` : '只在这台设备上处理。';
+  const [ic, title, body] = { voice: ['mic', '让它听见你', `需要用麦克风。声音${where}不保存录音。`],
+    camera: ['camera', '让它看见你面前的东西', `需要用摄像头和麦克风。画面${where}不保存画面。`],
+    screen: ['screen', '让它看你的屏幕', `需要屏幕录制权限。由你选择窗口，${where}`] }[source];
+  openMenu($('#liveBtn'), `<div class="primer">${icon(ic)}<b>${title}</b><p>${body}</p><div class="acts"><button class="btn primary" data-action="perm-go" data-source="${source}">继续</button><button class="btn" data-action="close-menu">现在不用</button></div></div>`, { label: title, role: 'dialog' });
+}
+function pushGap(L, text) {
+  L.item.turns.push({ gap: true, text });
+  renderThread({ stick: true });
+}
+const spanText = s => (s < 60 ? `${Math.max(1, Math.round(s))} 秒` : `${Math.floor(s / 60)} 分 ${Math.round(s % 60)} 秒`);
+function holdLive(reason) {
+  const L = state.live;
+  if (!L || L.hold) return;
+  for (const a of [...L.active]) finishTurn(L, a, a.who === 'model' ? 'hold' : undefined);
+  L.hold = { reason, ...HOLDS[reason], ready: !HOLDS[reason].wait };
+  L.holdFor = 0; L.idle = null; L.link = null;
+  closeMenu(); renderAll({ stick: true });
+  say(L.hold.title);
+}
+function resumeLive() {
+  const L = state.live;
+  if (!L?.hold) return;
+  const { reason, gap } = L.hold;
+  if (reason === 'route') L.route = 'speaker';
+  if (reason === 'heat') state.proto.heat = 1;
+  L.hold = null; L.lastUser = L.clock;
+  pushGap(L, `${gap} · 暂停了 ${spanText(L.holdFor)}`);
+  renderAll({ stick: true });
+  say('实时会话已继续');
+}
+function applyHeat() {
+  const L = state.live, h = state.proto.heat;
+  if (!L) return;
+  if (h === 3) return holdLive('heat');
+  if (L.hold?.reason === 'heat') L.hold.ready = true;
+  const line = ['温度恢复了', '设备有点热，看画面放慢了', '设备太热，先只用声音'][h];
+  if (!L.hold) pushGap(L, line);
+  showToast(line);
+  renderStage(); renderDock(); syncPresence();
+}
+// Once the cause is gone the title turns into a question, and the line under it says what the tap does.
+const holdCopy = h => (h.ready && h.after ? [h.after, '点继续后才会重新开始听和看。'] : [h.title, h.sub]);
+const seeing = L => L.source !== 'voice' && !L.videoOff && !L.hold && state.proto.heat < 2;
+const fpsText = () => (state.proto.heat >= 1 ? '每 3 秒看 1 帧' : weakLink() ? '每 2 秒看 1 帧' : '每秒看 1 帧');
+const healthText = () => (state.live?.hold || state.live?.link ? '没有在听' : state.proto.heat ? '设备发热' : weakLink() ? '网络不稳' : '运行正常');
 const revealed = a => Math.floor(a.turn.text.length * Math.min(1, (state.live.clock - a.start) / a.dur));
 function phaseOf(L) {
   if (L.phase === 'connecting') return 'connecting';
+  if (L.hold) return 'held';
+  if (L.link) return 'reconnect';
   const u = L.active.some(a => a.who === 'user'), m = L.active.find(a => a.who === 'model');
   if (u && m) return 'overlap';
   if (m) return m.turn.proactive ? 'proactive' : 'model';
   if (u) return 'you';
   return 'listening';
 }
-const PHASE_LABEL = { connecting: '正在连接', listening: '聆听中', you: '正在听你说', model: '正在回应', proactive: '主动提醒', overlap: '听到你了，让出话轮' };
+const PHASE_LABEL = { held: '已暂停', reconnect: '正在重连', connecting: '正在连接', listening: '聆听中', you: '正在听你说', model: '正在回应', proactive: '主动提醒', overlap: '听到你了，让出话轮' };
 const speech = (t, seed) => (.3 + .7 * Math.abs(Math.sin(t * 8.3 + seed + Math.sin(t * 2.1) * 2))) * (.55 + .45 * Math.random()) * (Math.sin(t * 1.3 + seed) > -.75 ? 1 : .15);
 function stepLive(dt) {
   const L = state.live;
+  if (!L) return;
+  if (L.hold) {
+    L.holdFor += dt;
+    if (!L.hold.ready && L.holdFor >= L.hold.wait) { L.hold.ready = true; renderStage(); renderDock(); say(L.hold.after); }
+    return;
+  }
+  if (L.link) {
+    L.link.t += dt;
+    if (L.link.t >= L.link.tries * 1.8) { L.link.tries++; renderDockNote(); }
+    if (L.link.t >= L.link.recover) {
+      pushGap(L, `连接中断 ${spanText(L.link.t)}，这段时间没有听到`);
+      L.link = null; renderDock(); syncPresence();
+    }
+    return;
+  }
+  if (L.idle !== null) {
+    L.idle -= dt;
+    if (L.idle <= 0) return endLive({ note: '很久没听到声音，已自动结束。', toast: false });
+    const n = $('#idleN'); if (n) n.textContent = Math.ceil(L.idle);
+  }
   L.clock += dt;
   if (L.phase === 'connecting') {
     L.connect -= dt;
@@ -1329,12 +1815,12 @@ function stepLive(dt) {
     if (L.samples.length > 520) L.samples.shift();
   }
   L.secAcc += dt;
-  const period = weakLink() ? 2 : 1;
+  const period = state.proto.heat >= 1 ? 3 : weakLink() ? 2 : 1;
   if (L.secAcc >= period && L.samples.length) {
     L.secAcc -= period;
     const s = L.samples.at(-1);
     s.tick = L.active.some(a => a.who === 'model') ? 2 : 1;
-    s.frame = L.source !== 'voice' && !L.videoOff ? 1 : 0;
+    s.frame = seeing(L) ? 1 : 0;
     L.kv += L.source === 'voice' ? 26 : 90;
     L.sampled = s.frame === 1;
   }
@@ -1369,13 +1855,15 @@ function paintTurn(L, turn) {
   }
   el.innerHTML = turnHTML(turn);
   if (stick) scrollToEnd();
+  const cap = $('#liveCap'), said = turn.shown ?? turn.text;
+  if (cap && said) { cap.dataset.who = turn.who; cap.textContent = said.length > 46 ? `…${said.slice(-46)}` : said; }
 }
 
 /* Waveform: one shared axis, you above, model below. Overlap = barge-in. */
 const LANE_GUTTER = 66;                    // keeps bars clear of the lane labels
 let trackColors = {};
 function readTrackColors() {
-  const s = getComputedStyle(document.documentElement);
+  const s = getComputedStyle($('#dock'));
   const v = n => s.getPropertyValue(n).trim();
   trackColors = { you: v('--you-wave'), model: v('--jade-wave'), overlap: v('--overlap'), idle: v('--line-2'), frame: v('--ink-3') };
 }
@@ -1389,7 +1877,7 @@ function drawTracks() {
   g.clearRect(0, 0, w, h);
   const mid = h / 2, amp = mid - 6, gap = 5, bar = 3;
   let x = w - bar - 6;
-  for (let i = L.samples.length - 1; i >= 0 && x > LANE_GUTTER; i--, x -= gap) {
+  for (let i = L.samples.length - 1, gutter = isCompact() ? 6 : LANE_GUTTER; i >= 0 && x > gutter; i--, x -= gap) {
     const s = L.samples[i];
     if (s.u > .2 && s.m > .2) { g.fillStyle = trackColors.overlap; g.fillRect(x - 1, 0, gap, h); }
     const uh = Math.max(1, s.u * amp), mh = s.m * amp;
@@ -1501,24 +1989,33 @@ const CAMERA_MOCK = `<svg class="mock-cam" viewBox="0 0 800 560" preserveAspectR
 function renderStage() {
   const L = state.live, on = liveHere() && L.source !== 'voice';
   $('#body').classList.toggle('has-stage', !!on);
+  $('#app').classList.toggle('stage-on', !!on && isCompact());
+  if (!on) $('#app').classList.remove('log-open');
+  readTrackColors();
   const st = $('#stage');
   const was = st.dataset.source;
   st.hidden = !on;
   if (!on) { st.dataset.source = ''; st.innerHTML = ''; return; }
-  const fps = weakLink() ? '0.5 帧/秒' : '1 帧/秒';
+  const blind = !seeing(L);
+  const [pauseTitle, pauseSub] = L.hold ? holdCopy(L.hold)
+    : state.proto.heat >= 2 ? ['设备太热，先只用声音', '降温后画面会恢复，语音还在继续。'] : ['画面已暂停', '语音还在继续，模型现在看不到任何内容。'];
+  const pause = `${icon(L.hold ? 'hush' : 'camera-off')}<b>${pauseTitle}</b><small>${pauseSub}</small>`;
+  const fps = fpsText();
   const name = L.source === 'screen' ? '窗口：session.ts' : '前置摄像头';
-  const tags = `<div class="stage-tags"><span class="tag">${L.videoOff ? '模型看不到画面' : `<i class="rec"></i>${isRemote() ? '正在上传' : '模型正在看'} · ${fps}`}</span>
-    <button class="tag" data-action="source-menu" aria-haspopup="menu" title="更换来源">${esc(name)}${icon('down', 'i')}</button></div>`;
+  const tags = `<div class="stage-tags"><span class="tag">${blind ? '模型看不到画面' : `<i class="rec"></i>${isRemote() ? '正在上传' : '本机处理'} · ${fps}`}</span>
+    ${!isCompact() ? `<button class="tag" data-action="source-menu" aria-haspopup="menu" title="更换来源">${esc(name)}${icon('down', 'i')}</button>`
+      : L.source === 'camera' ? `<button class="tag" data-action="flip-camera" aria-label="切换前后摄像头">${icon('flip')}${L.facing === 'front' ? '前置' : '后置'}</button>` : ''}</div>`;
   if (was === L.source && st.firstElementChild) {
     st.querySelector('.stage-tags').outerHTML = tags;
-    st.querySelector('.viewport').classList.toggle('off', L.videoOff);
-    st.querySelector('.paused').hidden = !L.videoOff;
+    st.querySelector('.viewport').classList.toggle('off', blind);
+    st.querySelector('.paused').hidden = !blind;
+    st.querySelector('.paused').innerHTML = pause;
     return;
   }
   st.dataset.source = L.source;
-  st.innerHTML = `<div class="viewport ${L.videoOff ? 'off' : ''}">${L.source === 'screen' ? SCREEN_MOCK : CAMERA_MOCK}
+  st.innerHTML = `<div class="viewport ${blind ? 'off' : ''}">${L.source === 'screen' ? SCREEN_MOCK : CAMERA_MOCK}
     <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>${tags}
-    <div class="paused" ${L.videoOff ? '' : 'hidden'}>${icon('camera-off')}<b>画面已暂停</b><small>语音还在继续，模型现在看不到任何内容。</small></div></div>`;
+    <div class="paused" ${blind ? '' : 'hidden'}>${pause}</div></div>`;
 }
 function renderDock() {
   const L = state.live, on = liveHere();
@@ -1529,35 +2026,55 @@ function renderDock() {
   if (!on) { d.innerHTML = ''; d.dataset.phase = ''; return; }
   const hasVideo = L.source !== 'voice';
   const canvasKept = $('#tracks');
-  const ctrl = `
+  const ctrl = L.hold ? `
+    <button class="ctl resume" data-action="live-resume" ${L.hold.ready ? '' : 'disabled'}>${icon('resume')}<span>${L.hold.resume ?? '继续'}</span></button>
+    <button class="ctl keep" data-action="live-to-text" title="结束实时，改用文字继续">${icon('keyboard')}<span>转文字</span></button>
+    <button class="ctl end" data-action="live-end" title="结束实时会话">${icon('end')}<span>结束</span></button>` : `
     <button class="ctl ${L.muted ? 'off' : ''}" data-action="live-mute" aria-pressed="${L.muted}" title="麦克风 (Alt+M)">${icon(L.muted ? 'mic-off' : 'mic')}<span>${L.muted ? '已静音' : '麦克风'}</span></button>
-    <button class="ctl ${hasVideo && L.videoOff ? 'off' : ''}" data-action="${hasVideo ? 'live-video' : 'source-menu'}" ${hasVideo ? `aria-pressed="${L.videoOff}"` : 'aria-haspopup="menu"'} title="${hasVideo ? '暂停或恢复画面 (Alt+V)' : '加入画面'}">${icon(hasVideo ? (L.videoOff ? 'camera-off' : L.source === 'screen' ? 'screen' : 'camera') : 'camera')}<span>${!hasVideo ? '加入画面' : L.videoOff ? '已暂停' : '画面'}</span></button>
+    ${isCompact()
+      ? `<button class="ctl" data-action="live-camera" aria-pressed="${hasVideo}" title="${hasVideo ? '关闭摄像头，回到语音' : '打开摄像头'}">${icon('camera')}<span>画面</span></button>`
+      : `<button class="ctl ${hasVideo && L.videoOff ? 'off' : ''}" data-action="${hasVideo ? 'live-video' : 'source-menu'}" ${hasVideo ? `aria-pressed="${L.videoOff}"` : 'aria-haspopup="menu"'} title="${hasVideo ? '暂停或恢复画面 (Alt+V)' : '加入画面'}">${icon(hasVideo ? (L.videoOff ? 'camera-off' : L.source === 'screen' ? 'screen' : 'camera') : 'camera')}<span>${!hasVideo ? '加入画面' : L.videoOff ? '已暂停' : '画面'}</span></button>`}
     ${hasVideo ? `<button class="ctl" data-action="live-freeze" ${L.videoOff ? 'disabled' : ''} title="定格这一帧，转成文字提问 (Alt+F)">${icon('freeze')}<span>定格提问</span></button>` : ''}
     <button class="ctl" data-action="live-hush" aria-pressed="${L.hush}" title="让它停下，只听不说 (Alt+H)">${icon('hush')}<span>先听我说</span></button>
+    <button class="ctl only-compact" data-action="live-more" aria-haspopup="dialog" aria-expanded="false">${icon('more')}<span>更多</span></button>
     <span class="ctl-sep"></span>
     <button class="ctl" data-action="live-to-text" title="结束实时，改用文字继续">${icon('keyboard')}<span>转文字</span></button>
     <button class="ctl end" data-action="live-end" title="结束实时会话">${icon('end')}<span>结束</span></button>`;
-  if (canvasKept) { d.querySelector('.dock-ctrl').innerHTML = ctrl; syncPresence(); return; }
+  if (canvasKept) { d.querySelector('.dock-ctrl').innerHTML = ctrl; renderDockNote(); syncPresence(); return; }
   d.innerHTML = `
-    <button class="dock-status" data-action="live-stats" aria-haspopup="dialog" title="查看链路状态">
+    <div class="dock-note" id="dockNote" role="status" hidden></div>
+    <button class="live-cap" id="liveCap" data-action="live-log" aria-label="查看完整记录">你可以直接开口，它在看着</button>
+    <button class="dock-status" data-action="live-stats" aria-haspopup="dialog" title="查看运行状态">
       <span class="ds-row"><i class="lamp"></i><strong id="presence">正在连接</strong></span>
-      <small><span class="mono" id="liveT">00:00</span><span id="liveHealth">${weakLink() ? '网络不稳' : '链路正常'}</span></small>
+      <small><span class="mono" id="liveT">00:00</span><span id="liveHealth">${healthText()}</span></small>
     </button>
     <div class="tracks" role="img" aria-label="双向音频轨：上方是你，下方是 MiniCPM"><span class="lane you">你</span><span class="lane me">MiniCPM</span><canvas id="tracks"></canvas></div>
     <div class="dock-ctrl">${ctrl}</div>`;
+  renderDockNote();
+}
+function renderDockNote() {
+  const L = state.live, n = $('#dockNote');
+  if (!L || !n) return;
+  const h = L.hold;
+  const html = h ? `<b>${holdCopy(h)[0]}</b><small>${holdCopy(h)[1]}</small>`
+    : L.link ? `<b>连接断了，正在重连</b><small>第 ${L.link.tries} 次尝试，到目前为止的记录都在。</small>`
+    : L.idle !== null ? `<b>没听到声音，<span id="idleN">${Math.ceil(L.idle)}</span> 秒后自动结束</b><button class="btn" data-action="live-keep">继续聊</button>` : '';
+  n.hidden = !html; n.innerHTML = html;
+  $('#dock').classList.toggle('noted', !!html);
 }
 function syncPresence() {
   const L = state.live; if (!L) return;
   $('#dock').dataset.phase = '';
-  $('#liveHealth').textContent = weakLink() ? '网络不稳' : '链路正常';
+  $('#liveHealth').textContent = healthText();
   paintLive();
 }
 function renderLivebar() {
-  const L = state.live, on = L && !liveHere();
+  const L = state.live, on = !!L && (!liveHere() || !!state.settingsTab);
   const b = $('#livebar');
   b.hidden = !on;
+  $('#app').classList.toggle('bar-on', on);
   if (!on) { b.innerHTML = ''; return; }
-  b.innerHTML = `<span class="grow">实时会话进行中 · ${esc(task(L.taskId).title)}</span><span class="mono" id="livebarT">${clock(L.clock)}</span>
+  b.innerHTML = `<span class="grow">${L.hold ? '实时会话已暂停' : '实时会话进行中'} · ${esc(task(L.taskId).title)}</span><span class="mono" id="livebarT">${clock(L.clock)}</span>
     <button data-action="live-return">返回</button><button data-action="live-end">结束</button>`;
 }
 
@@ -1568,40 +2085,63 @@ function renderInspector() {
   $('#app').classList.toggle('ins-open', state.inspector);
   if (!state.inspector) return;
   const list = (rows, ic, empty) => rows.length ? rows.map(n => `<div class="ins-item">${icon(ic)}<span class="nm">${esc(n)}</span></div>`).join('') : `<p class="ins-empty">${empty}</p>`;
-  el.innerHTML = `<div class="ins-top">任务面板<button class="icon-btn" data-action="toggle-inspector" aria-label="关闭任务面板">${icon('close')}</button></div>
-    <div class="ins-sec"><h3>应用场景</h3><div class="ins-item"><span class="nm">${esc(t.scene)}</span><button class="btn" style="min-height:28px;padding:0 9px;font-size:12.5px" data-action="scene-menu" aria-haspopup="menu">更换</button></div><p class="ins-empty">${esc(SCENES[t.scene].hint)}</p></div>
-    <div class="ins-sec"><h3>模型</h3><div class="ins-item"><span class="nm">${esc(modelOf(t).name)}</span><span class="pill">${esc(modelOf(t).kind)}</span></div><p class="ins-empty">${esc(capsText(modelOf(t)))}</p></div>
-    <div class="ins-sec"><h3>执行角色</h3>${t.ctx.agents.map(([n, s]) => `<div class="ins-item">${icon('agent')}<span class="nm">${esc(n)}</span><span class="pill">${esc(s)}</span></div>`).join('')}</div>
-    <div class="ins-sec"><h3>Skills</h3>${t.ctx.skills.length ? `<div class="chips-wrap">${t.ctx.skills.map(s => `<span class="pill">${esc(s)}</span>`).join('')}</div>` : '<p class="ins-empty">用到技能时会出现在这里。</p>'}</div>
+  el.innerHTML = `<div class="ins-top">${isCompact() ? '对话详情' : '对话详情'}<button class="icon-btn" data-action="toggle-inspector" aria-label="关闭对话详情">${icon('close')}</button></div>
+    <div class="ins-sec"><h3>处理位置</h3><div class="ins-item">${icon('shield')}<span class="nm">${isRemote() ? esc(remoteHost()) : '这台设备'}</span></div><p class="ins-empty">${isRemote() ? '内容会发送到这台服务器处理。' : '声音、画面和文件都留在本机。'}</p></div>
     <div class="ins-sec"><h3>材料</h3>${list(t.ctx.sources, 'clip', '发送的文件和定格画面会收在这里。')}</div>
-    <div class="ins-sec"><h3>产物</h3>${list(t.ctx.outputs, 'file', '任务生成的文档会收在这里。')}</div>`;
+    <div class="ins-sec"><h3>产物</h3>${list(t.ctx.outputs, 'file', '对话生成的文档会收在这里。')}</div>
+    <div class="ins-sec"><h3>应用场景</h3><div class="ins-item"><span class="nm">${esc(sceneName(t.scene))}</span><button class="btn" style="min-height:28px;padding:0 9px;font-size:12.5px" data-action="scene-menu" aria-haspopup="menu">更换</button></div><p class="ins-empty">${esc(SCENES[t.scene].hint)}</p></div>
+    <div class="ins-sec"><h3>模型</h3><div class="ins-item"><span class="nm">${esc(modelOf(t).name)}</span><span class="pill">${esc(modelOf(t).kind)}</span></div><p class="ins-empty">${esc(capsText(modelOf(t)))}</p></div>
+    ${state.prefs.tech ? `<div class="ins-sec"><h3>执行角色</h3>${t.ctx.agents.map(([n, s]) => `<div class="ins-item">${icon('agent')}<span class="nm">${esc(n)}</span><span class="pill">${esc(s)}</span></div>`).join('')}</div>
+    <div class="ins-sec"><h3>Skills</h3>${t.ctx.skills.length ? `<div class="chips-wrap">${t.ctx.skills.map(s => `<span class="pill">${esc(s)}</span>`).join('')}</div>` : '<p class="ins-empty">用到技能时会出现在这里。</p>'}</div>` : ''}`;
 }
 
 /* ================= Settings ================= */
 function renderSettings() {
-  const el = $('#settings'), tab = state.settingsTab;
+  const el = $('#settings'), tab = state.settingsTab, root = tab === 'index';
   el.hidden = !tab;
+  el.classList.toggle('at-root', root);
+  renderLivebar();
   if (!tab) { el.innerHTML = ''; return; }
   const scrollTop = el.querySelector('.set-body')?.scrollTop ?? 0;
-  const nav = SETTINGS_NAV.map(([g, items]) => `<div class="grp">${g}</div>${items.map(([id, n, ic]) => `<button data-action="settings-tab" data-tab="${id}" ${id === tab ? 'aria-current="page"' : ''}>${icon(ic)}${n}</button>`).join('')}`).join('');
-  el.innerHTML = `<div class="set-head">设置<span class="grow"></span><button class="icon-btn" data-action="close-settings" aria-label="关闭设置" title="关闭 (Esc)">${icon('close')}</button></div>
-    <nav class="set-nav" aria-label="设置分类">${nav}</nav><div class="set-body"><div class="set-in">${settingsBody(tab)}</div></div>`;
+  const nav = SETTINGS_NAV.map(([g, items]) => `<div class="grp">${g}</div>${items.map(([id, n, ic]) => `<button data-action="settings-tab" data-tab="${id}" ${id === tab || id === parentOf(tab) ? 'aria-current="page"' : ''}>${icon(ic)}${n}</button>`).join('')}`).join('');
+  const page = [...SETTINGS_NAV.flatMap(([, items]) => items), ...DEVELOPER_PAGES, ...PRIVACY_PAGES].find(([id]) => id === tab)?.[1];
+  const back = parentOf(tab) || (isCompact() && !root), closable = !isCompact() || root;
+  const head = `${back ? `<button class="icon-btn" data-action="settings-back" aria-label="返回">${icon('chev', 'i back')}</button>${esc(page)}` : '设置'}<span class="grow"></span>${closable ? `<button class="icon-btn" data-action="close-settings" aria-label="关闭设置" title="关闭 (Esc)">${icon('close')}</button>` : ''}`;
+  el.innerHTML = `<div class="set-head">${head}</div>
+    <nav class="set-nav" aria-label="设置分类">${nav}</nav><div class="set-body"><div class="set-in">${root ? '' : settingsBody(tab)}</div></div>`;
   el.querySelector('.set-body').scrollTop = scrollTop;
 }
 const row = (name, desc, ctrl) => `<div class="row"><div><b>${name}</b>${desc ? `<small>${desc}</small>` : ''}</div><div class="ctrl">${ctrl}</div></div>`;
 const sw = (key, label) => `<button class="sw" role="switch" aria-checked="${state.prefs[key]}" aria-label="${label}" data-action="pref" data-key="${key}"></button>`;
 const sel = (id, opts, val, label) => `<select id="${id}" aria-label="${label}">${opts.map(([v, n]) => `<option value="${v}" ${v === val ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
+const pick = (key, opts, label) => `<select data-pref="${key}" aria-label="${label}">${opts.map(([v, n]) => `<option value="${v}" ${v === state.prefs[key] ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
+const later = (label, msg = '原型中不执行') => `<button class="btn" data-action="proto-note" data-msg="${msg}">${label}</button>`;
 const pill = (s, k = '') => `<span class="pill ${k}">${s}</span>`;
 function settingsBody(tab) {
   if (tab === 'general') return `<h2>通用</h2><p>外观和输入习惯。</p>
     ${row('外观', '跟随系统时，会随日夜自动切换。', sel('setTheme', [['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']], state.theme, '外观'))}
-    ${row('发送方式', '输入法选词时按回车不会发送。', sel('setSend', [['enter', 'Enter 发送，Shift+Enter 换行'], ['mod', `${MOD}Enter 发送，Enter 换行`]], state.sendKey, '发送方式'))}
-    ${row('界面语言', '', pill('简体中文'))}
-    ${row('会话记录', isRemote() ? '任务和转写保存在这台设备上，处理时内容会发送到远程服务。' : '任务、转写和产物只保存在这台设备上。', pill('本地存储'))}`;
+    ${isCompact() ? '' : row('发送方式', '输入法选词时按回车不会发送。', sel('setSend', [['enter', 'Enter 发送，Shift+Enter 换行'], ['mod', `${MOD}Enter 发送，Enter 换行`]], state.sendKey, '发送方式'))}
+    ${row('界面语言', '切换后立即生效。', pick('lang', [['system', '跟随系统'], ['zh-CN', '简体中文'], ['zh-TW', '繁體中文（台灣）'], ['zh-HK', '繁體中文（香港）'], ['en', 'English']], '界面语言'))}
+    ${row('文字大小', '', pick('textSize', [['s', '小'], ['m', '标准'], ['l', '大'], ['xl', '特大']], '文字大小'))}
+    <h3>打开时</h3>
+    ${row('打开时进入', '', pick('openTo', [['new', '新对话'], ['last', '上次的对话']], '打开时进入'))}
+    ${row('新对话的场景', '', pick('defaultScene', Object.keys(SCENES).map(id => [id, sceneName(id)]), '新对话的场景'))}
+    <h3>反馈</h3>
+    ${row('提示音', '开始、结束实时会话时播放。', sw('sounds', '提示音'))}
+    ${isCompact() ? row('触感反馈', '操作时轻微震动。', sw('haptics', '触感反馈')) : `<h3>桌面</h3>
+    ${row('开机时启动', '在后台待命，随时可用。', sw('autostart', '开机时启动'))}
+    ${row('关闭窗口时', '', pick('closeAction', [['tray', '收起到托盘'], ['quit', '退出']], '关闭窗口时'))}`}`;
   if (tab === 'voice') {
     const voices = [['qing', '清亮', '默认，语速适中'], ['chen', '沉稳', '偏低，适合长时间收听'], ['ref', '我的参考音频', '上传 5–20 秒清晰人声']];
     return `<h2>声音与人设</h2><p>下一次实时会话开始时生效。</p>
       <h3>声音</h3><div class="voices" role="radiogroup" aria-label="声音">${voices.map(([id, n, s]) => `<button class="voice" role="radio" aria-checked="${state.voice === id}" data-action="set-voice" data-id="${id}"><span>${n === '我的参考音频' ? icon('clip') : icon('speaker')}</span><span><b>${n}</b><small>${s}</small></span></button>`).join('')}</div>
+      <p class="res-note">参考音频只保存在这台设备上，可以随时删除。</p>
+      ${row('试听当前声音', '', later('试听', '原型中不播放声音'))}
+      ${row('语速', '', pick('speed', [['.85', '慢'], ['1', '标准'], ['1.15', '快']], '语速'))}
+      <h3>回答</h3>
+      ${row('回答语言', '', pick('replyLang', [['ui', '跟随界面语言'], ['speech', '跟随我说的语言'], ['zh-CN', '简体中文'], ['zh-TW', '繁體中文（台灣）'], ['zh-HK', '繁體中文（香港）'], ['en', 'English']], '回答语言'))}
+      ${row('回答长度', '', pick('replyLength', [['short', '简短'], ['normal', '适中'], ['long', '详细']], '回答长度'))}
+      ${row('怎么称呼你', '', `<input type="text" data-pref="callName" value="${esc(state.prefs.callName)}" placeholder="可不填" aria-label="怎么称呼你">`)}
       <h3>人设</h3><label class="sr" for="persona">系统提示词</label><textarea id="persona">${esc(state.persona)}</textarea>`;
   }
   if (tab === 'live') return `<h2>实时会话</h2><p>边看、边听、边说时的行为和设备。</p>
@@ -1609,44 +2149,124 @@ function settingsBody(tab) {
     ${row('主动提醒', '你没说话时它能否先开口。通话中随时可调，立刻生效。', sel('setProactive', [['scene', '跟随场景'], ...Object.entries(PROACTIVE).map(([k, v]) => [k, `${v.label}（${v.sub}）`])], state.prefs.proactiveDefault, '主动提醒'))}
     ${row('开场先听', '开始后的头几秒只听不说。', sw('listenFirst', '开场先听'))}
     ${row('高清细节', '看清小字和细节，响应会变慢。', sw('hd', '高清细节'))}
+    ${row('打断灵敏度', '你开口后，它多快停下来听你说。', pick('interrupt', [['low', '低'], ['mid', '中'], ['high', '高']], '打断灵敏度'))}
+    ${row('长时间没说话时', '自动结束可以避免忘记关闭摄像头和麦克风。', pick('idleEnd', [['5', '5 分钟后结束'], ['10', '10 分钟后结束'], ['30', '30 分钟后结束'], ['never', '不自动结束']], '长时间没说话时'))}
+    <h3>字幕</h3>
+    ${row('显示字幕', '摄像头实时时在画面上显示。', sw('captions', '显示字幕'))}
+    ${row('字幕大小', '', pick('captionSize', [['m', '标准'], ['l', '大'], ['xl', '特大']], '字幕大小'))}
+    <h3>开始时</h3>
+    ${row('默认开启', '', pick('defaultSource', [['voice', '只用语音'], ['camera', '语音和摄像头']], '默认开启'))}
+    ${isCompact() ? row('默认摄像头', '', pick('cameraDefault', [['back', '后置'], ['front', '前置']], '默认摄像头')) : ''}
     <h3>设备</h3>
     ${row('麦克风', '', sel('devMic', [['d', '系统默认']], 'd', '麦克风'))}
     ${row('摄像头', '', sel('devCam', [['d', '系统默认']], 'd', '摄像头'))}
     ${row('扬声器', '外放时开启回声消除，避免它听到自己。', sel('devOut', [['d', '系统默认']], 'd', '扬声器'))}
     ${row('回声消除', '', sw('aec', '回声消除'))}`;
-  if (tab === 'applications') return `<h2>应用场景</h2><p>Application 层定义任务的使用场景，新建任务时选择。</p>
-    ${Object.entries(SCENES).map(([n, s]) => row(n, s.hint, pill(`主动提醒：${PROACTIVE[SCENE_PROACTIVE[n]].label}`))).join('')}`;
-  if (tab === 'agents') return `<h2>Agents</h2><p>Harness 中的执行角色，由 Core Agent 按任务调度。</p>
-    ${row('Core Agent', '主会话入口，协调任务所需能力。', pill('运行中', 'ok'))}
-    ${row('Skill Configuration Agent', '处理技能选择与配置。', pill('就绪'))}
-    ${row('Task Agent', '执行具体任务。', pill('就绪'))}
-    ${row('Schedule Task Agent', '承接定时任务。', pill('等待 Scheduler', 'warn'))}`;
-  if (tab === 'skills') return `<h2>Skills</h2><p>Harness 的技能分组。</p>
-    ${row('Core Skill', '工作台的基础技能。', pill('3 项'))}
-    ${row('Community Skill', '社区提供的技能。', pill('未安装'))}
-    ${row('User Skill', '你自己的技能与配置。', pill('未添加'))}`;
+  if (tab === 'memories') return `<h2>已记住的内容</h2><p>这些内容只保存在这台设备上，用来让回答更贴合你。</p>
+    ${state.memories.length ? state.memories.map((m, i) => row(esc(m), '', `<button class="btn" data-action="forget" data-id="${i}">删除</button>`)).join('') : '<p class="ins-empty">还没有记住任何内容。</p>'}`;
+  if (tab === 'network') return `<h2>联网记录</h2><p>列出最近 7 天这台设备发出的所有请求。</p>
+    <div class="assure">${icon('shield')}<div><b>${state.netLog.length ? `只有 ${state.netLog.length} 句搜索词离开过这台设备` : '没有内容离开这台设备'}</b><small>下面的请求不包含你的对话、声音、画面或文件。</small></div></div>
+    <h3>最近 7 天</h3>
+    ${state.netLog.map(n => row('联网搜索', `${n.when} · 只发送“${esc(n.query)}”`, pill('1 次', 'warn'))).join('')}
+    ${row('检查更新', '今天 09:12 · 只发送版本号', pill('1 次'))}
+    ${row('模型下载', '周一 21:40 · 只请求模型文件', pill('1 次'))}`;
+  if (tab === 'privacy') {
+    const denied = state.proto.perm === 'denied';
+    const perm = (name, desc, status, kind = '') => row(name, desc, `${pill(status, kind)}${later('管理', '原型中不跳转系统设置')}`);
+    return `<h2>隐私与数据</h2><p>决定哪些内容留在这台设备上。</p>
+    <div class="assure">${icon('shield')}<div><b>${isRemote() ? `内容正发送到 ${esc(remoteHost())}` : '你的内容留在这台设备上'}</b><small>${isRemote() ? '处理时声音、画面和文字会离开本机，对话记录仍保存在这里。' : '声音、画面、文件和对话都在本机处理，断网也能用。'}</small></div></div>
+    <h3>联网</h3>
+    ${row('离线模式', '关闭所有联网功能，包括更新和联网搜索。', sw('offlineMode', '离线模式'))}
+    ${row('联网搜索', '需要时让它上网查资料，搜索词会离开这台设备。', pick('webSearch', [['off', '关闭'], ['ask', '每次询问'], ['auto', '自动']], '联网搜索'))}
+    ${row('自动检查更新', '只发送版本号。', sw('updates', '自动检查更新'))}
+    ${row('匿名使用统计', '不包含对话、声音、画面和文件。', sw('analytics', '匿名使用统计'))}
+    ${row('崩溃报告', '', pick('crash', [['ask', '每次询问'], ['never', '不发送'], ['auto', '自动发送']], '崩溃报告'))}
+    ${row('联网记录', state.netLog.length ? `最近 7 天有 ${state.netLog.length} 次搜索离开这台设备。` : '最近 7 天没有内容离开这台设备。', '<button class="btn" data-action="settings-tab" data-tab="network">查看</button>')}
+    <h3>对话记录</h3>
+    ${row('保存对话记录', '关闭后，对话只在打开期间存在。', sw('keepHistory', '保存对话记录'))}
+    ${row('新对话默认为临时对话', '临时对话结束后不留记录。', sw('tempDefault', '新对话默认为临时对话'))}
+    ${row('自动清理', '到期的对话会从这台设备上删除。', sel('setRetention', [['never', '不清理'], ['90', '90 天后'], ['30', '30 天后'], ['7', '7 天后']], state.prefs.retention, '自动清理'))}
+    <h3>记忆</h3>
+    ${row('记住我的偏好', '从对话里记下习惯和常用信息。', sw('memory', '记住我的偏好'))}
+    ${row('已记住的内容', `${state.memories.length} 条`, '<button class="btn" data-action="settings-tab" data-tab="memories">管理</button>')}
+    <h3>实时会话</h3>
+    ${row('保存实时转写', '结束后把说过的话留在对话里。', sw('keepTranscript', '保存实时转写'))}
+    ${row('保存画面', '默认不保存摄像头和屏幕画面。', sw('keepFrames', '保存画面'))}
+    ${row('实时中暂停通知', '避免通知内容被看到。', sw('muteNotify', '实时中暂停通知'))}
+    ${row('模糊画面里的人脸', '保存定格画面时自动处理。', sw('blurFaces', '模糊画面里的人脸'))}
+    <h3>设备权限</h3>
+    ${perm('麦克风', '语音和实时会话', denied ? '已拒绝' : '已允许', denied ? 'bad' : 'ok')}
+    ${perm('摄像头', '拍照和实时看', denied ? '已拒绝' : '已允许', denied ? 'bad' : 'ok')}
+    ${isCompact() ? '' : perm('屏幕录制', '一起看屏幕', denied ? '已拒绝' : '未决定', denied ? 'bad' : '')}
+    ${perm('通知', '定时任务和主动提醒', '未决定')}
+    <h3>访问</h3>
+    ${row('打开时验证', '用面容、指纹或系统密码打开。', sw('appLock', '打开时验证'))}
+    ${row('自动锁定', '', pick('autoLock', [['0', '立即'], ['1', '1 分钟后'], ['5', '5 分钟后'], ['never', '不锁定']], '自动锁定'))}
+    ${row('切到后台时隐藏内容', '在最近使用的应用里显示空白。', sw('hidePreview', '切到后台时隐藏内容'))}
+    ${isCompact() ? row('禁止截屏', '', sw('noScreenshot', '禁止截屏')) : ''}
+    <h3>数据</h3>
+    ${row('加密保存', '用设备密钥加密对话和材料。', sw('encrypt', '加密保存'))}
+    ${row('对话和转写', '占用 12 MB', later('导出'))}
+    ${row('材料和产物', '占用 86 MB', later('清理'))}
+    ${row('缓存', '占用 24 MB', later('清除'))}
+    ${row('清除全部对话', '对话、转写和产物都会从这台设备上删除。', '<button class="btn danger" data-action="clear-all">清除</button>')}`;
+  }
+  if (tab === 'advanced') {
+    const v = state.params;
+    const param = (key, name, desc, min, max, step) => `<div class="param"><div class="param-top"><b>${name}</b><span class="tech">${key}</span><output class="mono" id="out-${key}">${v[key]}</output></div><input type="range" data-param="${key}" min="${min}" max="${max}" step="${step}" value="${v[key]}" aria-label="${name}"><small>${desc}</small></div>`;
+    return `<h2>高级</h2><p>大多数情况下不用改。改动后，运行方式会显示为“自定义”。</p>
+      <h3>回答</h3>
+      ${param('max_tokens', '回答长度上限', '回答最长能写多少。', 256, 4096, 256)}
+      ${param('temperature', '随机程度', '越高越有变化，越低越稳定。', 0, 1.5, .05)}
+      ${param('top_p', '选词范围', '越小用词越保守。', .1, 1, .05)}
+      ${param('top_k', '候选词数量', '每一步考虑多少个候选词。', 1, 100, 1)}
+      ${param('repeat_penalty', '避免重复', '越高越不容易重复同样的话。', 1, 1.5, .01)}
+      <h3>设备</h3>
+      ${row('对话记忆长度 <span class="tech">n_ctx</span>', '记得更多会占用更多内存。', sel('setCtx', [[2048, '2048'], [4096, '4096'], [8192, '8192'], [16384, '16384']], v.n_ctx, '对话记忆长度'))}
+      ${param('n_gpu_layers', '显卡加速层数', '0 表示只用 CPU。层数越多越快，占用显存也越多。', 0, 99, 1)}
+      ${row('本地服务地址', '', `<input type="text" id="engineAddr" value="${esc(state.address)}" aria-label="本地服务地址">`)}
+      ${row('连接状态', '', `${pill(backendState() === 'ready' ? '已连接' : '未连接', backendState() === 'ready' ? 'ok' : 'bad')}<button class="btn" data-action="test-engine">测试</button>`)}
+      <h3>显示</h3>
+      ${row('显示技术信息', '在回答和对话详情里显示速度、执行步骤和用到的技能。', sw('tech', '显示技术信息'))}
+      ${row('恢复默认', '把上面的参数改回“均衡”。', '<button class="btn" data-action="reset-params">恢复</button>')}
+      <h3>开发者</h3>
+      ${DEVELOPER_PAGES.map(([id, name, desc]) => row(name, desc, `<button class="btn" data-action="settings-tab" data-tab="${id}">查看</button>`)).join('')}`;
+  }
+  if (tab === 'applications') return `<h2>应用场景</h2><p>不同场景下，建议和主动提醒的频率不一样。</p>
+    <h3>场景</h3>
+    ${Object.entries(SCENES).map(([id, sc]) => row(esc(sc.name), `${esc(sc.hint)} · ${esc(sc.source)}`, `<button class="sw" role="switch" aria-checked="${!state.sceneOff.has(id)}" aria-label="显示${esc(sc.name)}" data-action="toggle-scene" data-id="${id}" ${id === state.prefs.defaultScene ? 'disabled' : ''}></button>`)).join('')}
+    <p class="res-note">关闭后不再出现在新对话里，已有对话不受影响。默认场景不能关闭。</p>
+    <h3>主动提醒</h3>
+    ${Object.entries(SCENES).map(([id, sc]) => row(esc(sc.name), '', `<select data-scene-level="${id}" aria-label="${esc(sc.name)}的主动提醒">${Object.entries(PROACTIVE).map(([k, v]) => `<option value="${k}" ${k === SCENE_PROACTIVE[id] ? 'selected' : ''}>${v.label}</option>`).join('')}</select>`)).join('')}`;
   if (tab === 'models') {
   const st = backendState();
   const status = st === 'ready' ? pill('已连接', 'ok') : st === 'unset' ? pill('未配置', 'warn') : pill('未连接', 'bad');
   const card = (id, ic, name, sub) => `<button class="voice" role="radio" aria-checked="${state.backend === id}" data-action="set-backend" data-id="${id}" ${state.live ? 'disabled' : ''}>${icon(ic)}<span><b>${name}</b><small>${sub}</small></span></button>`;
-  const connection = isRemote()
-    ? `${row('服务地址', 'MiniCPM 服务的 WebSocket 地址。', `<input type="text" id="remoteUrl" value="${esc(state.remote.url)}" placeholder="wss://example.com/omni" aria-label="服务地址">`)}
-      ${row('访问令牌', '服务要求鉴权时填写，保存在系统钥匙串。', `<input type="password" id="remoteToken" autocomplete="off" placeholder="${state.remote.hasToken ? '已保存' : '未设置'}" aria-label="访问令牌">`)}
-      ${row('连接状态', 'MiniCPM-o 4.5', `${status}<button class="btn" data-action="test-engine">测试连接</button>`)}`
-    : `${row('引擎地址', 'MiniCPM-o 4.5 · 本机进程', `<input type="text" id="engineAddr" value="${esc(state.address)}" aria-label="引擎地址">`)}
-      ${row('连接状态', '', `${status}<button class="btn" data-action="test-engine">测试连接</button>`)}`;
-  return `<h2>模型与运行位置</h2><p>新任务使用默认模型，每个任务也可以在输入框里单独切换。</p>
-    <h3>运行位置</h3><div class="voices" role="radiogroup" aria-label="运行位置">
-      ${card('local', 'screen', '端侧', '在这台设备上运行，内容不离开本机')}
-      ${card('remote', 'server', '远程', '在服务器上运行，内容会发送到服务器')}
-    </div>${state.live ? '<p class="res-note">实时会话进行中，结束后才能切换。</p>' : ''}
-    <h3>连接</h3>${connection}
-    <h3>模型</h3>${Object.entries(MODELS).map(([id, m]) => {
+  const connection = isRemote() ? `${row('服务地址', 'MiniCPM 服务的 WebSocket 地址。', `<input type="text" id="remoteUrl" value="${esc(state.remote.url)}" placeholder="wss://example.com/omni" aria-label="服务地址">`)}
+      ${row('访问令牌', '服务要求鉴权时填写。', `<input type="password" id="remoteToken" autocomplete="off" placeholder="${state.remote.hasToken ? '已保存' : '未设置'}" aria-label="访问令牌">`)}
+      ${row('连接状态', '', `${status}<button class="btn" data-action="test-engine">测试连接</button>`)}` : '';
+  const preset = (id, p) => `<button class="voice" role="radio" aria-checked="${state.preset === id}" data-action="set-preset" data-id="${id}"><span><b>${p.label}</b><small>${p.sub}</small></span></button>`;
+  return `<h2>模型</h2><p>新对话使用默认模型，也可以在每个对话里单独切换。</p>
+    <h3>可用模型</h3>${Object.entries(MODELS).map(([id, m]) => {
       const missing = !isRemote() && !state.installed.has(id);
-      const ctrl = missing ? `${pill('未下载')}<button class="btn" data-action="download-model" data-id="${id}">下载</button>`
-        : id === state.defaultModel ? pill('默认', 'ok') : `<button class="btn" data-action="default-model" data-id="${id}">设为默认</button>`;
-      return row(esc(m.name), `${m.kind} · ${capsText(m)}`, ctrl);
-    }).join('')}`;
+      if (state.dl?.id === id) return `${row(esc(m.name), `${capsText(m)} · ${sizeOf(id)} GB`, pill('下载中'))}${dlHTML(state.dl)}`;
+      const ctrl = missing ? `${pill('未下载')}<button class="btn" data-action="download-model" data-id="${id}" ${state.dl ? 'disabled' : ''}>下载</button>`
+        : id === state.defaultModel ? pill('默认', 'ok') : `<button class="btn" data-action="default-model" data-id="${id}">设为默认</button>${isRemote() ? '' : `<button class="btn" data-action="remove-model" data-id="${id}">移除</button>`}`;
+      return row(esc(m.name), `${capsText(m)} · ${sizeOf(id)} GB`, ctrl);
+    }).join('')}
+    <h3>运行方式</h3><div class="voices" role="radiogroup" aria-label="运行方式">${Object.entries(PRESETS).map(([id, p]) => preset(id, p)).join('')}</div>
+    ${state.preset === 'custom' ? '<p class="res-note">当前使用自定义参数。<button class="link" data-action="settings-tab" data-tab="advanced">查看</button></p>' : ''}
+    <h3>电量与发热</h3>
+    ${row('空闲后释放内存', '让出内存给其他应用，下次使用时要重新载入。', pick('idleRelease', [['5', '5 分钟后'], ['15', '15 分钟后'], ['60', '1 小时后'], ['never', '不释放']], '空闲后释放内存'))}
+    ${row('低电量时自动省电', '', sw('lowPower', '低电量时自动省电'))}
+    ${row('发热时降低负载', '响应会变慢，设备会更凉快。', sw('thermal', '发热时降低负载'))}
+    ${isCompact() ? row('只在 Wi-Fi 下下载', '', sw('wifiOnly', '只在 Wi-Fi 下下载')) : ''}
+    <details class="disclose" ${isRemote() || state.placeOpen ? 'open' : ''}><summary>${icon('chev')}运行位置<span>${isRemote() ? '远程服务' : '这台设备'}</span></summary>
+      <div class="voices" role="radiogroup" aria-label="运行位置">
+        ${card('local', 'shield', '这台设备', '内容不离开本机，断网也能用')}
+        ${card('remote', 'server', '远程服务', '内容会发送到你指定的服务器')}
+      </div>${state.live ? '<p class="res-note">实时会话进行中，结束后才能切换。</p>' : ''}${connection}
+    </details>`;
   }
   return `<h2>资源服务</h2><p>Resource 层对接媒体、工具与外部通道。</p>
     ${row('Multimedia Adapter', '麦克风、摄像头与屏幕捕捉。', pill('就绪', 'ok'))}
@@ -1662,11 +2282,19 @@ function openMenu(anchor, html, { label = '菜单', role = 'menu' } = {}) {
   if (menuAnchor === anchor) return closeMenu();
   closeMenu();
   const m = $('#menu');
-  m.innerHTML = html; m.hidden = false; m.setAttribute('role', role); m.setAttribute('aria-label', label);
-  const r = anchor.getBoundingClientRect(), mr = m.getBoundingClientRect();
-  const left = Math.max(8, Math.min(r.left, innerWidth - mr.width - 8));
-  const top = r.bottom + 6 + mr.height > innerHeight - 8 ? r.top - mr.height - 6 : r.bottom + 6;
-  m.style.left = `${left}px`; m.style.top = `${Math.max(8, top)}px`;
+  const sheet = isCompact();
+  m.innerHTML = (sheet ? '<div class="grip" aria-hidden="true"></div>' : '') + html;
+  m.hidden = false; m.setAttribute('role', role); m.setAttribute('aria-label', label);
+  m.classList.toggle('sheet', sheet);
+  $('#sheetScrim').hidden = !sheet;
+  if (sheet) {
+    m.style.left = m.style.top = '';
+  } else {
+    const r = anchor.getBoundingClientRect(), mr = m.getBoundingClientRect();
+    const left = Math.max(8, Math.min(r.left, innerWidth - mr.width - 8));
+    const top = r.bottom + 6 + mr.height > innerHeight - 8 ? r.top - mr.height - 6 : r.bottom + 6;
+    m.style.left = `${left}px`; m.style.top = `${Math.max(8, top)}px`;
+  }
   anchor.setAttribute('aria-expanded', 'true');
   menuAnchor = anchor;
   (m.querySelector('.mi') ?? m).focus?.();
@@ -1674,12 +2302,54 @@ function openMenu(anchor, html, { label = '菜单', role = 'menu' } = {}) {
 function closeMenu(refocus = false) {
   const m = $('#menu');
   if (m.hidden) return;
-  m.hidden = true; m.innerHTML = '';
+  m.hidden = true; m.innerHTML = ''; m.style.transform = '';
+  $('#sheetScrim').hidden = true;
   if (menuAnchor) { menuAnchor.setAttribute('aria-expanded', 'false'); if (refocus && menuAnchor.isConnected) menuAnchor.focus(); }
   menuAnchor = null;
 }
 const mi = (action, title, { sub, ic, data = '', tick, danger, role = 'menuitem' } = {}) =>
   `<button class="mi ${danger ? 'danger' : ''}" role="${role}" data-action="${action}" ${data} ${tick !== undefined ? `aria-checked="${!!tick}"` : ''}>${ic ? icon(ic) : ''}<span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${tick ? `<span class="tick">✓</span>` : ''}</button>`;
+const modelItems = () => Object.entries(MODELS).map(([id, m]) => {
+  const missing = !isRemote() && !state.installed.has(id);
+  return mi(missing ? 'open-settings' : 'set-model', m.name, { sub: missing ? '未下载，去设置里下载' : `${m.kind} · ${capsText(m)}`, data: missing ? 'data-tab="models"' : `data-id="${id}"`, tick: id === (cur().model ?? state.defaultModel), role: 'menuitemradio' });
+}).join('');
+/* Compact form: everything the desktop header and composer show at once lives here. */
+function titleSheet(anchor) {
+  const t = cur(), named = !isBlank(t);
+  openMenu(anchor, `<div class="ttl">模型</div>${modelItems()}
+    <div class="ttl">场景</div><div class="scene-row" role="radiogroup" aria-label="应用场景">${activeScenes(t).map(s => `<button class="scene-opt" role="radio" aria-checked="${s === t.scene}" data-action="set-scene" data-scene="${s}">${sceneName(s)}</button>`).join('')}</div>
+    <div class="sep"></div>
+    ${named && !t.temp ? mi('rename-id', '重命名', { data: `data-id="${t.id}"` }) : ''}
+    ${mi('toggle-inspector', '对话详情', { sub: '处理位置、材料和产物' })}
+    ${named ? mi('proto-note', '导出这段对话', { data: 'data-msg="原型中不导出"' }) : ''}
+    ${mi('proto-menu', '原型状态', { sub: '切换到这些状态来评审' })}
+    ${named ? mi('delete-task', '删除对话', { data: `data-id="${t.id}"`, danger: true }) : ''}`, { label: '当前对话', role: 'dialog' });
+}
+function attachSheet(anchor) {
+  const tile = (action, ic, name) => `<button type="button" class="mi tile" role="menuitem" data-action="${action}">${icon(ic)}<b>${name}</b></button>`;
+  openMenu(anchor, `<div class="tiles">${tile('take-photo', 'camera', '相机')}${tile('pick-file', 'image', '相册')}${tile('pick-file', 'file', '文件')}</div>
+    ${can('live') ? mi('start-live', '实时看', { sub: '打开摄像头，边看边聊', ic: 'duplex', data: 'data-source="camera"' }) : ''}
+    <div class="sep"></div>
+    ${mi('toggle-thinking', '深度思考', { sub: '先思考再回答，适合复杂问题', ic: 'bulb', tick: state.thinking, role: 'menuitemcheckbox' })}
+    ${can('speech') ? mi('toggle-voice-reply', '语音回复', { sub: '让回答同时朗读出来', ic: 'speaker', tick: state.voiceReply, role: 'menuitemcheckbox' }) : ''}`, { label: '添加内容' });
+}
+function liveMoreSheet(anchor) {
+  const L = state.live, video = L.source !== 'voice';
+  openMenu(anchor, `${video ? mi('live-freeze', '定格提问', { sub: '结束实时，带上这一帧打字问', ic: 'freeze' }) : ''}
+    ${mi('live-to-text', '转文字', { sub: '结束实时，用文字接着聊', ic: 'keyboard' })}
+    ${video ? mi('live-log', '查看记录', { sub: '展开这次实时的完整转写', ic: 'file' }) : ''}
+    ${mi('live-route', '声音输出', { sub: ROUTES[L.route], ic: 'speaker' })}
+    ${mi('live-stats', '运行状态与主动提醒', { sub: '响应速度和提醒频率', ic: 'wave' })}
+    ${mi('proto-menu', '原型状态', { sub: '来电、断线、发热等打断' })}`, { label: '更多实时操作', role: 'dialog' });
+}
+/* Long press stands in for the desktop hover tools and task menu. */
+let pressTarget = null;
+function pressSheet(el) {
+  pressTarget = el;
+  if (el.matches('.task-main')) return openMenu(el, mi('rename-id', '重命名', { data: `data-id="${el.dataset.id}"` }) + mi('delete-task', '删除', { data: `data-id="${el.dataset.id}"`, danger: true }), { label: '对话操作' });
+  const ai = el.matches('.msg-ai');
+  openMenu(el, mi('press-act', '复制', { ic: 'copy', data: 'data-do="copy"' }) + (ai ? mi('press-act', '重新生成', { ic: 'retry', data: 'data-do="regen"' }) + mi('press-act', '朗读', { ic: 'speaker', data: 'data-do="read-aloud"' }) : ''), { label: '消息操作' });
+}
 function sourceMenu(anchor) {
   const here = liveHere();
   const keys = here ? ['camera', 'screen'] : ['voice', 'camera', 'screen'];
@@ -1702,11 +2372,95 @@ const say = text => { $('#announce').textContent = text; };
 /* ================= Top-level render ================= */
 function renderAll(opts) {
   renderNav(); renderHead(); renderThread(opts); renderStage(); renderDock(); renderLivebar();
-  renderBanner(); renderInspector(); renderSettings(); syncComposer();
+  renderBanner(); renderInspector(); renderSettings(); syncComposer(); renderGate();
   if (liveHere()) paintLive();
 }
+/* ================= First run, app lock, model download ================= */
+const MARK = '<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path class="a" d="M4 10.500V9M8 10.500V6M12 10.500V3.500M16 10.500V7.500M20 10.500V9.500"/><path class="b" d="M4 13.500V15M8 13.500V16.500M12 13.500V16M16 13.500V20.500M20 13.500V17"/></svg>';
+const sizeOf = id => (MODELS[id].mem.weights + MODELS[id].mem.media).toFixed(1);
+function dlText(d) {
+  const pct = Math.round(d.pct), left = (sizeOf(d.id) * (100 - d.pct) / 100).toFixed(1);
+  return { running: `${pct}% · 还需约 ${Math.max(1, Math.ceil((100 - d.pct) / 9))} 分钟`, paused: `已暂停 · ${pct}%`, wifi: `等待 Wi-Fi · ${pct}%，还差 ${left} GB`,
+    failed: `下载中断 · ${pct}%，已下载的部分还在`, verifying: '正在检查文件…' }[d.status];
+}
+function dlActs(d) {
+  const b = (action, label, kind = '') => `<button class="btn ${kind}" data-action="${action}">${label}</button>`;
+  return { running: b('dl-pause', '暂停'), paused: b('dl-resume', '继续') + b('dl-cancel', '取消下载'), wifi: b('dl-resume', '用移动网络继续') + b('dl-cancel', '取消下载'),
+    failed: b('dl-resume', '重试') + b('dl-cancel', '取消下载'), verifying: '' }[d.status];
+}
+const dlHTML = d => `<div class="dl" data-status="${d.status}"><div class="dl-bar"><i data-dl-bar style="width:${d.pct}%"></i></div><small data-dl-text>${dlText(d)}</small><div class="acts">${dlActs(d)}</div></div>`;
+let dlTimer = 0;
+function startDownload(id) {
+  state.dl = { id, pct: 0, status: 'running' };
+  runDownload();
+  paintGates();
+}
+function runDownload() {
+  clearInterval(dlTimer);
+  dlTimer = setInterval(() => {
+    const d = state.dl;
+    if (!d) return clearInterval(dlTimer);
+    if (d.status !== 'running') return;
+    d.pct = Math.min(100, d.pct + .9);
+    document.querySelectorAll('[data-dl-bar]').forEach(b => { b.style.width = `${d.pct}%`; });
+    document.querySelectorAll('[data-dl-text]').forEach(t => { t.textContent = dlText(d); });
+    if (d.pct < 100) return;
+    d.status = 'verifying'; paintGates();
+    clearInterval(dlTimer);
+    setTimeout(finishDownload, 900);
+  }, 120);
+}
+function finishDownload() {
+  const { id } = state.dl;
+  state.installed.add(id); state.dl = null;
+  if (state.onboard) state.onboard = null;
+  usage.ready = false;
+  renderAll();
+  showToast(`${MODELS[id].name} 准备好了`);
+}
+function paintGates() { renderGate(); renderBanner(); renderSettings(); syncComposer(); }
+function onboardHTML(step) {
+  if (step === 'welcome') return `${MARK}<h1>在你自己的设备上运行</h1><p>MiniCPM 能看、能听、能说，全部在这台设备上完成。</p>
+    <ul class="ob-list">
+      <li>${icon('shield')}<span><b>内容不离开这台设备</b><small>声音、画面和文件都在本机处理。</small></span></li>
+      <li>${icon('offline')}<span><b>断网也能用</b><small>模型下载好之后就不需要网络了。</small></span></li>
+      <li>${icon('file')}<span><b>都由你决定</b><small>记住了什么、联网做了什么，都能看到和删除。</small></span></li>
+    </ul><div class="ob-foot"><button class="btn primary ob-cta" data-action="ob-next">继续</button></div>`;
+  if (step === 'model') {
+    const low = state.proto.device === 'low', noRoom = state.proto.storage === 'low';
+    const best = low ? 'minicpm-v-4.6' : OMNI, size = sizeOf(state.obModel);
+    return `<h1>选一个模型</h1><p>模型要下载到这台设备上，之后就不再需要网络。</p>
+      <p class="ob-device">这台设备：内存 ${low ? '6' : '12'} GB · 可用空间 ${noRoom ? '3.9' : '38'} GB</p>
+      <div class="ob-models" role="radiogroup" aria-label="模型">${FIRST_MODELS.map(([key, name, sub]) => {
+        const id = key ?? OMNI, warn = low && id === OMNI;
+        return `<button class="voice" role="radio" aria-checked="${state.obModel === id}" data-action="ob-pick" data-id="${id}">${icon(id === OMNI ? 'duplex' : 'image')}<span><b>${name}${id === best ? pill('推荐', 'ok') : ''}</b><small>${sub}</small><small>${warn ? '这台设备内存偏小，运行时可能被系统关闭' : `${MODELS[id].name} · ${sizeOf(id)} GB`}</small></span></button>`;
+      }).join('')}</div>
+      ${noRoom ? `<div class="note">${icon('alert')}<div class="grow"><strong>还差 ${(size - 3.9 + .5).toFixed(1)} GB 空间</strong><p>清理后回到这里继续，或者选一个更小的模型。</p></div></div>` : ''}
+      <div class="ob-foot"><button class="btn primary ob-cta" data-action="ob-download" ${noRoom && size > 3.4 ? 'disabled' : ''}>下载 ${size} GB</button>
+      <button class="link ob-alt" data-action="ob-remote">我有自己的服务器</button></div>`;
+  }
+  const d = state.dl;
+  if (!d) return '';
+  return `<h1>${d.status === 'verifying' ? '马上就好' : `正在下载 ${esc(MODELS[d.id].name)}`}</h1><p>下载在后台继续，可以先离开这个页面。</p>${dlHTML(d)}
+    <div class="ob-foot"><button class="btn primary ob-cta" data-action="ob-leave">先进去看看</button></div>`;
+}
+function renderGate() {
+  const o = $('#onboard'), k = $('#lock');
+  o.hidden = !state.onboard; k.hidden = !state.locked && !state.cover;
+  $('#app').inert = !!state.onboard || !k.hidden;
+  if (state.onboard) o.innerHTML = `<div class="gate-in">${onboardHTML(state.onboard)}</div>`;
+  if (!k.hidden) k.innerHTML = `<div class="gate-in">${MARK}${state.cover ? '' : `<h1>MiniCPM 已锁定</h1><p>${isCompact() ? '用面容、指纹或设备密码打开。' : '用 Touch ID 或系统密码打开。'}</p><button class="btn primary ob-cta" data-action="unlock">解锁</button>`}</div>`;
+}
+// Temporary conversations leave nothing behind, so there is no undo here.
+function leaveTemp(next) {
+  const t = cur();
+  if (!t?.temp || t.id === next || isBlank(t) || state.live?.taskId === t.id) return;
+  tasks.splice(tasks.indexOf(t), 1);
+  showToast('临时对话已清除');
+}
 function selectTask(id) {
-  state.current = id; state.permError = null;
+  leaveTemp(id);
+  state.current = id; state.permError = null; state.settingsTab = null;
   const t = cur(); t.unread = false;
   $('#app').classList.remove('nav-open');
   if (innerWidth <= 1180) state.inspector = false;
@@ -1714,10 +2468,11 @@ function selectTask(id) {
   stopRecord(false);
   renderAll({ stick: true });
 }
+const blankTask = () => ({ id: uid('task'), title: '新对话', autoTitle: true, temp: state.prefs.tempDefault, scene: state.prefs.defaultScene, group: '今天', meta: '刚刚', items: [], ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: [] } });
 function newTask() {
   let t = tasks.find(x => isBlank(x) && x.autoTitle);
   if (!t) {
-    t = { id: uid('task'), title: '新任务', autoTitle: true, scene: cur()?.scene ?? 'Work Buddy', group: '今天', meta: '刚刚', items: [], ctx: { agents: [['Core Agent', '主会话']], skills: [], sources: [], outputs: [] } };
+    t = blankTask();
     tasks.unshift(t);
     tasks.sort((a, b) => (a.group === b.group ? 0 : a.group === '今天' ? -1 : 1));
   }
@@ -1726,8 +2481,8 @@ function newTask() {
   $('#prompt').focus();
 }
 function deleteTask(id) {
-  const i = tasks.findIndex(t => t.id === id), [t] = tasks.splice(i, 1);
   if (state.live?.taskId === id) endLive({ toast: false });
+  const i = tasks.findIndex(t => t.id === id), [t] = tasks.splice(i, 1);
   if (!tasks.length) { state.current = null; newTask(); }
   else if (state.current === id) selectTask(tasks[Math.min(i, tasks.length - 1)].id);
   else renderNav();
@@ -1739,21 +2494,32 @@ const actions = {
   'select-task': el => selectTask(el.dataset.id),
   'new-task': newTask,
   'toggle-nav': () => {
-    if (innerWidth <= 820) $('#app').classList.toggle('nav-open');
+    if (isCompact()) $('#app').classList.toggle('nav-open');
     else $('#app').classList.toggle('nav-collapsed');
   },
-  'close-drawers': () => { $('#app').classList.remove('nav-open'); state.inspector = false; renderInspector(); renderHead(); },
+  'title-sheet': el => titleSheet(el),
+  'close-drawers': () => { $('#app').classList.remove('nav-open', 'log-open'); state.inspector = false; renderInspector(); renderHead(); },
   'toggle-inspector': () => { state.inspector = !state.inspector; renderInspector(); renderHead(); },
   rename: () => startRename(),
-  'task-menu': el => openMenu(el, mi('rename-id', '重命名', { data: `data-id="${el.dataset.id}"` }) + mi('delete-task', '删除', { data: `data-id="${el.dataset.id}"`, danger: true }), { label: '任务操作' }),
+  'task-menu': el => openMenu(el, mi('rename-id', '重命名', { data: `data-id="${el.dataset.id}"` }) + mi('proto-note', '导出', { data: 'data-msg="原型中不导出"' }) + mi('delete-task', '删除', { data: `data-id="${el.dataset.id}"`, danger: true }), { label: '对话操作' }),
   'rename-id': el => startRename(el.dataset.id),
   'delete-task': el => deleteTask(el.dataset.id),
-  'scene-menu': el => openMenu(el, Object.keys(SCENES).map(s => mi('set-scene', s, { sub: SCENES[s].hint, data: `data-scene="${s}"`, tick: s === cur().scene, role: 'menuitemradio' })).join(''), { label: '应用场景' }),
+  'scene-menu': el => openMenu(el, activeScenes(cur()).map(s => mi('set-scene', sceneName(s), { sub: SCENES[s].hint, data: `data-scene="${s}"`, tick: s === cur().scene, role: 'menuitemradio' })).join(''), { label: '应用场景' }),
   'set-scene': el => { cur().scene = el.dataset.scene; renderAll(); },
   'use-prompt': el => { $('#prompt').value = el.dataset.prompt; syncComposer(); $('#prompt').focus(); },
   'proto-menu': el => openMenu(el, `<div class="ttl">切换到这些状态来评审</div>
     ${mi('proto-engine', '后端离线', { tick: state.engine === 'offline', role: 'menuitemcheckbox' })}
     ${mi('proto-perm', '设备权限被拒绝', { tick: state.proto.perm === 'denied', role: 'menuitemcheckbox' })}
+    ${mi('proto-ask', '第一次用时询问权限', { tick: state.proto.perm === 'ask', role: 'menuitemcheckbox' })}
+    ${mi('proto-lock', '应用已锁定')}
+    ${mi('proto-first', '首次启动')}
+    ${state.live ? `<div class="sep"></div><div class="ttl">打断实时会话</div>
+    ${mi('proto-hold', '来电', { data: 'data-reason="call"' })}
+    ${mi('proto-hold', '切到后台再回来', { data: 'data-reason="background"' })}
+    ${mi('proto-hold', '耳机断开', { data: 'data-reason="route"' })}
+    ${mi('proto-link', '连接中断后恢复')}
+    ${mi('proto-idle', '长时间没说话')}
+    ${mi('proto-heat', '设备发热', { sub: ['现在：正常', '现在：放慢看画面', '现在：只用声音', '现在：暂停'][state.proto.heat] })}` : ''}
     ${isRemote() ? mi('proto-weak', '网络不稳（实时降帧）', { tick: state.proto.weak, role: 'menuitemcheckbox' }) : `
     <div class="sep"></div><div class="ttl">设备</div>
     ${mi('proto-tight', '显存紧张', { tick: state.proto.tight, role: 'menuitemcheckbox' })}
@@ -1765,30 +2531,84 @@ const actions = {
     if (state.engine === 'offline' && state.live) endLive({ note: '连接中断，已保留到此为止的转写。', toast: false });
     renderAll();
   },
+  'proto-ask': () => { state.proto.perm = state.proto.perm === 'ask' ? 'granted' : 'ask'; state.permError = null; renderBanner(); },
+  'proto-lock': () => { state.locked = true; renderGate(); },
+  'proto-first': () => { location.search = '?onboard=welcome'; },
+  'proto-hold': el => holdLive(el.dataset.reason),
+  'proto-link': () => { const L = state.live; if (!L.hold) { L.link = { t: 0, tries: 1, recover: 5 }; renderDock(); syncPresence(); } },
+  'proto-idle': () => { const L = state.live; if (!L.hold) { L.idle = 30; renderDockNote(); } },
+  'proto-heat': () => { state.proto.heat = (state.proto.heat + 1) % 4; applyHeat(); },
   'proto-perm': () => { state.proto.perm = state.proto.perm === 'denied' ? 'granted' : 'denied'; state.permError = null; renderBanner(); },
   'proto-tight': () => { state.proto.tight = !state.proto.tight; stepUsage(); renderEngine(); },
   'proto-hw': el => { state.proto.hw = el.dataset.hw; renderEngine(); },
   'proto-weak': () => { state.proto.weak = !state.proto.weak; stepUsage(); paintUsage(); renderStage(); syncPresence(); },
-  reconnect: () => { showToast('正在重新连接…'); setTimeout(() => { state.engine = 'ready'; renderAll(); showToast(isRemote() ? '已连接远程服务' : '已连接本地引擎'); }, 700); },
-  'open-settings': el => { state.settingsTab = el.dataset.tab || 'general'; $('#app').classList.remove('nav-open'); renderSettings(); $('.set-nav [aria-current]')?.focus(); },
+  reconnect: () => { showToast('正在重新连接…'); setTimeout(() => { state.engine = 'ready'; renderAll(); showToast(isRemote() ? '已连接远程服务' : '已连接本机模型'); }, 700); },
+  'open-settings': el => { state.settingsTab = isCompact() && el.closest('.nav-foot') ? 'index' : el.dataset.tab || 'general'; $('#app').classList.remove('nav-open'); renderSettings(); $('.set-nav [aria-current]')?.focus(); },
   'settings-tab': el => { state.settingsTab = el.dataset.tab; renderSettings(); $('.set-body').scrollTop = 0; $('.set-nav [aria-current]')?.focus(); },
+  'settings-back': () => { state.settingsTab = parentOf(state.settingsTab) ?? 'index'; renderSettings(); },
   'close-settings': () => { state.settingsTab = null; renderSettings(); },
-  pref: el => { const k = el.dataset.key; state.prefs[k] = !state.prefs[k]; el.setAttribute('aria-checked', state.prefs[k]); },
+  pref: el => { const k = el.dataset.key; state.prefs[k] = !state.prefs[k]; el.setAttribute('aria-checked', state.prefs[k]); if (k === 'tech') renderAll(); },
+  'set-preset': el => { state.preset = el.dataset.id; state.params = { ...PRESETS[el.dataset.id].params }; renderSettings(); $(`[data-action=set-preset][data-id=${state.preset}]`)?.focus(); },
+  'reset-params': () => { state.preset = 'balanced'; state.params = { ...PRESETS.balanced.params }; renderSettings(); showToast('已恢复默认'); },
+  'clear-all': () => showToast('原型中不清除数据'),
+  'proto-note': el => showToast(el.dataset.msg),
+  forget: el => {
+    const i = +el.dataset.id, [m] = state.memories.splice(i, 1);
+    renderSettings();
+    showToast('已删除', '撤销', () => { state.memories.splice(i, 0, m); renderSettings(); });
+  },
+  'toggle-scene': el => {
+    const id = el.dataset.id, off = state.sceneOff;
+    if (off.has(id)) off.delete(id); else off.add(id);
+    el.setAttribute('aria-checked', !off.has(id));
+    renderThread();
+  },
+  'remove-model': el => {
+    const id = el.dataset.id;
+    state.installed.delete(id);
+    renderSettings();
+    showToast(`已移除 ${MODELS[id].name}`, '撤销', () => { state.installed.add(id); renderSettings(); });
+  },
   'set-voice': el => { state.voice = el.dataset.id; renderSettings(); $(`.voice[data-id=${state.voice}]`).focus(); },
-  'model-menu': el => openMenu(el, `<div class="ttl">这个任务使用的模型</div>${Object.entries(MODELS).map(([id, m]) => {
-    const missing = !isRemote() && !state.installed.has(id);
-    return mi(missing ? 'open-settings' : 'set-model', m.name, { sub: missing ? '未下载，去设置里下载' : `${m.kind} · ${capsText(m)}`, data: missing ? 'data-tab="models"' : `data-id="${id}"`, tick: id === (cur().model ?? state.defaultModel), role: 'menuitemradio' });
-  }).join('')}<div class="sep"></div>${mi('open-settings', '管理模型', { data: 'data-tab="models"' })}`, { label: '选择模型' }),
+  'model-menu': el => openMenu(el, `<div class="ttl">这个对话使用的模型</div>${modelItems()}<div class="sep"></div>${mi('open-settings', '管理模型', { data: 'data-tab="models"' })}`, { label: '选择模型' }),
   'set-model': el => setModel(el.dataset.id),
   'default-model': el => { state.defaultModel = el.dataset.id; renderAll(); },
-  'download-model': el => {
-    const id = el.dataset.id;
-    el.disabled = true; el.textContent = '下载中…';
-    setTimeout(() => { state.installed.add(id); renderSettings(); showToast(`${MODELS[id].name} 已下载`); }, 1200);
+  'download-model': el => startDownload(el.dataset.id),
+  'dl-pause': () => { state.dl.status = 'paused'; paintGates(); },
+  'dl-resume': () => { state.dl.status = 'running'; paintGates(); },
+  'dl-cancel': () => { state.dl = null; paintGates(); },
+  'ob-next': () => { state.onboard = 'model'; renderGate(); },
+  'ob-pick': el => { state.obModel = el.dataset.id; renderGate(); },
+  'ob-download': () => { state.defaultModel = state.loaded = state.obModel; startDownload(state.obModel); state.onboard = 'download'; renderAll(); },
+  'ob-leave': () => { state.onboard = null; renderAll(); },
+  'ob-remote': () => { state.onboard = null; state.backend = 'remote'; state.placeOpen = true; state.settingsTab = 'models'; renderAll(); },
+  unlock: () => { state.locked = false; renderGate(); },
+  'perm-go': el => { state.proto.perm = 'granted'; startLive(el.dataset.source); },
+  'close-menu': () => closeMenu(true),
+  'toggle-temp': () => { const t = cur(); t.temp = !t.temp; renderAll(); },
+  'copy-code': () => showToast('已复制'),
+  'continue-reply': el => {
+    const it = cur().items.find(x => x.id === el.dataset.id);
+    it.cut = null; it.html += '搭下午的航班回程。</p>';
+    renderThread();
+  },
+  'carry-new': () => { newTask(); showToast('已带上上一个对话的摘要'); },
+  'ask-allow': el => {
+    const t = cur(), it = t.items.find(x => x.id === el.dataset.id);
+    it.state = 'allowed';
+    state.netLog.unshift({ when: '刚刚', query: it.query });
+    t.items.push({ type: 'ai', text: it.reply, stat: '41 tok/s · 1.2 s' });
+    renderThread({ stick: true });
+  },
+  'ask-deny': el => {
+    const t = cur(), it = t.items.find(x => x.id === el.dataset.id);
+    it.state = 'denied';
+    t.items.push({ type: 'ai', text: it.fallback, stat: '43 tok/s · 0.8 s' });
+    renderThread({ stick: true });
   },
   'set-backend': el => {
     if (state.backend === el.dataset.id) return;
-    state.backend = el.dataset.id; store.set('backend', state.backend);
+    state.backend = el.dataset.id; store.set('backend', state.backend); state.placeOpen = true;
     usage.ready = false;
     renderAll();
     $(`[data-action=set-backend][data-id=${state.backend}]`)?.focus();
@@ -1801,7 +2621,10 @@ const actions = {
     showToast(state.engine === 'offline' ? `${where} 没有响应` : `已连接 ${where} · ${isRemote() ? 86 : 18} ms`);
     renderAll();
   },
-  attach: () => $('#file').click(),
+  attach: el => (isCompact() ? attachSheet(el) : $('#file').click()),
+  'pick-file': () => $('#file').click(),
+  'take-photo': () => { state.atts.push({ id: uid('a'), kind: 'image', name: '照片.jpg', sub: '刚刚拍摄' }); syncComposer(); },
+  'press-act': el => actions[el.dataset.do](pressTarget),
   'remove-att': el => { state.atts = state.atts.filter(a => a.id !== el.dataset.id); syncComposer(); },
   record: startRecord,
   'record-cancel': () => stopRecord(false),
@@ -1809,12 +2632,12 @@ const actions = {
   'toggle-voice-reply': () => { state.voiceReply = !state.voiceReply; syncComposer(); },
   'toggle-thinking': () => { state.thinking = !state.thinking; syncComposer(); },
   'retry-send': el => {
-    if (!backendReady()) return showToast(isRemote() ? '远程服务还没有连上' : '引擎还没有连上');
+    if (!backendReady()) return showToast(isRemote() ? '远程服务还没有连上' : '模型还没有启动');
     const t = cur(), it = t.items.find(x => x.id === el.dataset.id);
     it.failed = false; renderThread(); loadModel(t, () => startReply(t));
   },
   copy: async el => {
-    const text = el.closest('.msg-ai').querySelector('.content').innerText;
+    const text = el.closest('.msg-ai,.msg-user').querySelector('.content,.bubble').innerText;
     try { await navigator.clipboard.writeText(text); showToast('已复制'); } catch { showToast('无法写入剪贴板，请手动选择文字'); }
   },
   regen: el => {
@@ -1830,11 +2653,16 @@ const actions = {
   'toast-undo': () => { $('#toast').hidden = true; toastUndo?.(); },
   'dismiss-perm': () => { state.permError = null; renderBanner(); $('#prompt').focus(); },
 
-  'live-menu': el => sourceMenu(el),
+  // Compact: the wave button goes straight to voice, camera is one tap away in the dock.
+  'live-menu': el => (isCompact() ? startLive('voice') : sourceMenu(el)),
+  'live-camera': () => { if (state.live.source === 'voice') startLive('camera'); else setLiveSource('voice'); },
+  'flip-camera': () => { const L = state.live; L.facing = L.facing === 'front' ? 'back' : 'front'; renderStage(); },
+  'live-more': el => liveMoreSheet(el),
+  'live-log': () => { $('#app').classList.add('log-open'); scrollToEnd(); },
   'source-menu': el => sourceMenu(el),
   'start-live': el => startLive(el.dataset.source),
   'live-return': () => selectTask(state.live.taskId),
-  resources: el => openMenu(el, `<div class="ttl">${isRemote() ? '远程服务' : '这台设备'}</div><div id="resRows">${resourceDetail()}</div><div class="sep"></div>${mi('open-settings', '模型与运行位置', { data: 'data-tab="models"' })}`, { label: '本机资源', role: 'dialog' }),
+  resources: el => openMenu(el, `<div class="ttl">${isRemote() ? '远程服务' : '这台设备'}</div><div id="resRows">${resourceDetail()}</div><div class="sep"></div>${mi('open-settings', '模型', { data: 'data-tab="models"' })}`, { label: '本机资源', role: 'dialog' }),
   'set-level': el => { state.live.level = el.dataset.level; repaintTurns(); showToast(`主动提醒：${PROACTIVE[el.dataset.level].label}`); },
   'less-proactive': el => {
     const L = state.live, was = L.level, turn = L.item.turns.find(t => t.id === el.dataset.id);
@@ -1843,6 +2671,10 @@ const actions = {
     showToast(`主动提醒已调到“${PROACTIVE[L.level].label}”`, '撤销', () => { if (state.live === L) { L.level = was; turn.lowered = false; repaintTurns(); } });
   },
   'live-end': () => endLive(),
+  'live-resume': resumeLive,
+  'live-keep': () => { state.live.idle = null; renderDockNote(); },
+  'live-route': () => openMenu($('.dock-status'), `<div class="ttl">声音输出</div>${Object.entries(ROUTES).map(([k, v]) => mi('set-route', v, { data: `data-route="${k}"`, tick: state.live.route === k, role: 'menuitemradio' })).join('')}`, { label: '声音输出' }),
+  'set-route': el => { state.live.route = el.dataset.route; showToast(`声音从${ROUTES[el.dataset.route]}输出`); },
   'live-mute': () => { const L = state.live; L.muted = !L.muted; renderDock(); say(L.muted ? '麦克风已关闭' : '麦克风已打开'); },
   'live-video': () => { const L = state.live; L.videoOff = !L.videoOff; renderStage(); renderDock(); say(L.videoOff ? '画面已暂停' : '画面已恢复'); },
   'live-hush': () => {
@@ -1870,11 +2702,12 @@ const actions = {
   'live-stats': el => {
     const L = state.live, weak = weakLink(), video = L.source !== 'voice' && !L.videoOff;
     const stat = (k, v) => `<div class="stat"><span>${k}</span><span class="mono">${v}</span></div>`;
-    openMenu(el, `<div class="ttl">链路状态</div>
-      ${stat('麦克风', L.muted ? '已静音' : '采集中')}${stat('画面', video ? (weak ? '0.5 帧/秒' : '1 帧/秒') : '未发送')}
-      ${stat('响应延迟', weak ? '1.4 s' : '420 ms')}${stat('上下文', `${L.kv.toLocaleString()} tokens`)}${stat('已压住的提醒', `${L.held} 次`)}
+    openMenu(el, `<div class="ttl">运行状态</div>
+      ${stat('麦克风', L.muted ? '已静音' : '采集中')}${stat('画面', seeing(L) ? fpsText().replace('看 ', '') : '未开启')}
+      ${stat('响应延迟', weak ? '1.4 s' : '420 ms')}${stat('对话记忆', state.prefs.tech ? `${L.kv.toLocaleString()} tokens` : `已用 ${Math.min(100, Math.round(L.kv / state.params.n_ctx * 100))}%`)}${stat('已压住的提醒', `${L.held} 次`)}
       <div class="sep"></div><div class="ttl">主动提醒</div>
-      ${Object.entries(PROACTIVE).map(([k, v]) => mi('set-level', v.label, { sub: v.sub, data: `data-level="${k}"`, tick: L.level === k, role: 'radio' })).join('')}`, { label: '链路状态', role: 'dialog' });
+      ${Object.entries(PROACTIVE).map(([k, v]) => mi('set-level', v.label, { sub: v.sub, data: `data-level="${k}"`, tick: L.level === k, role: 'radio' })).join('')}
+      <div class="sep"></div>${mi('live-route', '声音输出', { sub: ROUTES[L.route], ic: 'speaker' })}`, { label: '运行状态', role: 'dialog' });
     $('#menu').tabIndex = -1; $('#menu').focus();
   },
 };
@@ -1894,11 +2727,22 @@ document.addEventListener('change', e => {
   if (id === 'remoteUrl') { state.remote.url = e.target.value.trim(); store.set('remoteUrl', state.remote.url); usage.ready = false; renderNav(); renderBanner(); syncComposer(); }
   if (id === 'remoteToken') { state.remote.hasToken = !!e.target.value; e.target.value = ''; e.target.placeholder = state.remote.hasToken ? '已保存' : '未设置'; }
   if (id === 'setProactive') state.prefs.proactiveDefault = e.target.value;
+  if (id === 'setRetention') state.prefs.retention = e.target.value;
+  const pref = e.target.dataset.pref;
+  if (pref) {
+    state.prefs[pref] = e.target.value;
+    if (pref === 'lang') showToast('语言文案第一阶段接入，当前仍显示简体中文');
+    if (pref === 'defaultScene') { state.sceneOff.delete(e.target.value); }
+  }
+  if (e.target.dataset.sceneLevel) SCENE_PROACTIVE[e.target.dataset.sceneLevel] = e.target.value;
+  if (id === 'setCtx') { state.params.n_ctx = +e.target.value; state.preset = 'custom'; }
   if (id === 'setSend') { state.sendKey = e.target.value; store.set('sendKey', state.sendKey); syncComposer(); }
   if (id === 'file') { addFiles(e.target.files); e.target.value = ''; }
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'persona') state.persona = e.target.value;
+  const key = e.target.dataset.param;
+  if (key) { state.params[key] = +e.target.value; state.preset = 'custom'; $(`#out-${key}`).textContent = e.target.value; }
 });
 $('#search').addEventListener('input', renderNav);
 $('#prompt').addEventListener('input', syncComposer);
@@ -1935,12 +2779,13 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (!$('#menu').hidden) return closeMenu(true);
     if (state.recording) return stopRecord(false);
+    if ($('#app').classList.contains('log-open')) return $('#app').classList.remove('log-open');
     if (state.reply?.taskId === state.current) return stopReply();
     if (state.settingsTab) return actions['close-settings']();
     if ($('#app').classList.contains('nav-open') || (state.inspector && innerWidth <= 1180)) return actions['close-drawers']();
     return;
   }
-  if (mod && key === 'k') { e.preventDefault(); if ($('#app').classList.contains('nav-collapsed')) actions['toggle-nav'](); if (innerWidth <= 820) $('#app').classList.add('nav-open'); $('#search').focus(); }
+  if (mod && key === 'k') { e.preventDefault(); if ($('#app').classList.contains('nav-collapsed')) actions['toggle-nav'](); if (isCompact()) $('#app').classList.add('nav-open'); $('#search').focus(); }
   if (mod && key === 'n') { e.preventDefault(); newTask(); }
   if (mod && key === 'b') { e.preventDefault(); actions['toggle-nav'](); }
   if (mod && key === 'i') { e.preventDefault(); actions['toggle-inspector'](); }
@@ -1951,7 +2796,46 @@ document.addEventListener('keydown', e => {
     if (map[e.code]) { e.preventDefault(); actions[map[e.code]](); }
   }
 });
-addEventListener('resize', () => { closeMenu(); });
+addEventListener('resize', () => { if (!isCompact()) closeMenu(); });
+
+/* Compact form: long press, sheet drag, keyboard-aware height */
+(function initTouch() {
+  const TARGETS = '.task-main,.msg-ai,.msg-user';
+  let timer = 0, startY = 0, fired = false;
+  const cancel = () => clearTimeout(timer);
+  addEventListener('pointerdown', e => {
+    fired = false;
+    const el = isCompact() && e.pointerType !== 'mouse' ? e.target.closest(TARGETS) : null;
+    if (!el || e.target.closest('button:not(.task-main),summary,a')) return;
+    startY = e.clientY;
+    timer = setTimeout(() => { fired = true; pressSheet(el); }, 450);
+  }, { passive: true });
+  addEventListener('pointermove', e => { if (Math.abs(e.clientY - startY) > 8) cancel(); }, { passive: true });
+  addEventListener('pointerup', cancel); addEventListener('pointercancel', cancel);
+  addEventListener('click', e => { if (fired) { fired = false; e.stopPropagation(); e.preventDefault(); } }, true);
+  addEventListener('contextmenu', e => { if (isCompact() && e.target.closest(TARGETS)) e.preventDefault(); });
+
+  const m = $('#menu');
+  let y0 = null;
+  m.addEventListener('pointerdown', e => { if (e.target.closest('.grip')) { y0 = e.clientY; m.style.transition = 'none'; e.target.setPointerCapture(e.pointerId); } });
+  m.addEventListener('pointermove', e => { if (y0 !== null) m.style.transform = `translateY(${Math.max(0, e.clientY - y0)}px)`; });
+  const drop = e => { if (y0 === null) return; const far = e.clientY - y0 > 70; y0 = null; m.style.transition = m.style.transform = ''; if (far) closeMenu(true); };
+  m.addEventListener('pointerup', drop); m.addEventListener('pointercancel', drop);
+
+  const fit = () => {
+    const root = document.documentElement.style;
+    if (isCompact() && window.visualViewport) { root.setProperty('--app-h', `${visualViewport.height}px`); scrollTo(0, 0); }
+    else root.removeProperty('--app-h');
+  };
+  visualViewport?.addEventListener('resize', fit);
+  fit();
+})();
+function syncForm() {
+  const compact = isCompact();
+  if (!compact && state.settingsTab === 'index') state.settingsTab = 'general';
+  if (!compact) $('#app').classList.remove('nav-open', 'log-open');
+}
+COMPACT_QUERY.addEventListener('change', () => { closeMenu(); syncForm(); renderAll({ stick: true }); });
 
 /* Task bar width */
 (function initResizer() {
@@ -1982,14 +2866,33 @@ addEventListener('resize', () => { closeMenu(); });
  * ?task=screen  ?live=screen|camera|voice&t=11  ?view=empty  ?settings=voice
  * ?theme=dark  ?engine=offline  ?perm=denied  ?net=weak  ?inspector=1
  * ?proactive=off|low|high  ?hw=discrete|unified|none  ?mem=tight
- * ?backend=remote  ?backend=remote&remote=empty  ?model=minicpm-v-4.6 */
+ * ?backend=remote  ?backend=remote&remote=empty  ?model=minicpm-v-4.6
+ * ?hold=call|background|route|heat (&ready=1)  ?link=1  ?idle=1  ?heat=1|2
+ * ?onboard=welcome|model|download  ?device=low  ?storage=low
+ * ?dl=62&dlstate=running|paused|wifi|failed|verifying  ?perm=ask
+ * ?lock=1  ?cover=1  ?temp=1 */
 document.querySelectorAll('kbd[data-mod]').forEach(k => { k.textContent = MOD + k.dataset.mod; });
+syncForm();
 {
   const q = new URLSearchParams(location.search);
   if (q.get('theme')) state.theme = q.get('theme');
   applyTheme();
   if (q.get('engine') === 'offline') state.engine = 'offline';
-  if (q.get('perm') === 'denied') state.proto.perm = 'denied';
+  if (q.get('perm')) state.proto.perm = q.get('perm');
+  if (q.get('device') === 'low') { state.proto.device = 'low'; state.obModel = 'minicpm-v-4.6'; }
+  if (q.get('storage') === 'low') state.proto.storage = 'low';
+  if (q.get('heat')) state.proto.heat = +q.get('heat');
+  if (q.get('lock')) state.locked = true;
+  if (q.get('cover')) state.cover = true;
+  if (q.get('dl') || q.get('onboard')) {
+    state.installed = new Set(['minicpm-v-4.6']);
+    state.installed.delete(state.defaultModel);
+    if (q.get('onboard')) { state.installed.clear(); const t = blankTask(); tasks.splice(0, tasks.length, t); state.current = t.id; state.onboard = q.get('onboard'); }
+    if (q.get('dl') || q.get('onboard') === 'download') {
+      state.dl = { id: state.obModel, pct: +(q.get('dl') ?? 34), status: q.get('dlstate') ?? 'running' };
+      runDownload();
+    }
+  }
   if (q.get('net') === 'weak') state.proto.weak = true;
   if (q.get('backend')) {
     state.backend = q.get('backend');
@@ -2004,11 +2907,15 @@ document.querySelectorAll('kbd[data-mod]').forEach(k => { k.textContent = MOD + 
   if (task(q.get('task'))) state.current = q.get('task');
   if (q.get('settings')) state.settingsTab = q.get('settings');
   renderAll({ stick: true });
-  if (q.get('view') === 'empty') newTask();
+  if (q.get('view') === 'empty' || q.get('temp')) newTask();
+  if (q.get('temp')) actions['toggle-temp']();
   if (q.get('live')) {
     if (!q.get('task') && q.get('view') !== 'empty') { newTask(); }
     startLive(q.get('live'));
     if (q.get('t') && state.live) fastForward(+q.get('t'));
+    if (state.live && q.get('hold')) { holdLive(q.get('hold')); if (q.get('ready')) { state.live.hold.ready = true; renderAll({ stick: true }); } }
+    if (state.live && q.get('link')) actions['proto-link']();
+    if (state.live && q.get('idle')) actions['proto-idle']();
   }
 }
 </script>
